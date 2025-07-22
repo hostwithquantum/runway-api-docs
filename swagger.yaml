@@ -1,0 +1,2157 @@
+basePath: /
+definitions:
+  api.App:
+    properties:
+      created:
+        type: string
+      features:
+        items:
+          $ref: '#/definitions/api.AppFeatures'
+        type: array
+      id:
+        type: string
+      meta:
+        $ref: '#/definitions/api.AppMeta'
+      owner:
+        type: string
+      plan:
+        type: string
+      region:
+        type: string
+      type:
+        type: string
+      updated:
+        type: string
+    type: object
+  api.AppCreateRequest:
+    properties:
+      features:
+        items:
+          $ref: '#/definitions/api.AppFeatures'
+        type: array
+      id:
+        type: string
+      plan:
+        type: string
+      region:
+        type: string
+    required:
+    - id
+    - plan
+    type: object
+  api.AppFeatures:
+    properties:
+      name:
+        type: string
+      value:
+        type: boolean
+    type: object
+  api.AppList:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.App'
+        type: array
+      total:
+        type: integer
+    type: object
+  api.AppMeta:
+    properties:
+      role:
+        type: string
+    type: object
+  api.AppPermissionDeleteRequest:
+    properties:
+      user:
+        type: string
+    required:
+    - user
+    type: object
+  api.AppPermissionList:
+    type: object
+  api.AppPermissionPutRequest:
+    properties:
+      role:
+        $ref: '#/definitions/api.AppPermissionRole'
+      user:
+        type: string
+    required:
+    - role
+    - user
+    type: object
+  api.AppPermissionRole:
+    enum:
+    - owner
+    - developer
+    - viewer
+    type: string
+    x-enum-varnames:
+    - AppPermissionRoleOwner
+    - AppPermissionRoleDeveloper
+    - AppPermissionRoleViewer
+  api.AppSettings:
+    properties:
+      app:
+        description: App is the app name. It cannot be updated at all right now.
+        type: string
+      autoscale:
+        additionalProperties:
+          $ref: '#/definitions/api.Autoscale'
+        type: object
+      created:
+        description: Created is the time that the application settings was created
+          and cannot be updated.
+        type: string
+      label:
+        $ref: '#/definitions/api.Labels'
+      maintenance:
+        description: Maintenance determines if the application is taken down for maintenance
+          or not.
+        type: boolean
+      owner:
+        description: Owner is the app owner. It cannot be updated with AppSettings.Set().
+          See app.Transfer().
+        type: string
+      routable:
+        description: |-
+          Routable determines if the application should be exposed by the router.
+          NOTE this is the only thing currently supported
+        type: boolean
+      updated:
+        description: Updated is the last time the application settings was changed
+          and cannot be updated.
+        type: string
+      uuid:
+        description: |-
+          UUID is a unique string reflecting the application settings in its current state.
+          It changes every time the application settings is changed and cannot be updated.
+        type: string
+      whitelist:
+        items:
+          type: string
+        type: array
+    type: object
+  api.AuthLoginResponse:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  api.AuthLogoutRequest:
+    properties:
+      token:
+        type: string
+    required:
+    - token
+    type: object
+  api.AuthLogoutResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  api.Autoscale:
+    properties:
+      cpu_percent:
+        type: integer
+      max:
+        type: integer
+      min:
+        type: integer
+    type: object
+  api.ConfigUnset:
+    properties:
+      values:
+        additionalProperties: true
+        type: object
+    required:
+    - values
+    type: object
+  api.Domain:
+    properties:
+      app:
+        type: string
+      created:
+        type: string
+      deletable:
+        type: boolean
+      domain:
+        type: string
+      owner:
+        type: string
+      root:
+        $ref: '#/definitions/api.RootDomain'
+      updated:
+        type: string
+    type: object
+  api.DomainCreateRequest:
+    properties:
+      domain:
+        type: string
+    required:
+    - domain
+    type: object
+  api.DomainListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/api.Domain'
+        type: array
+      status:
+        type: string
+    type: object
+  api.ExecProbe:
+    properties:
+      command:
+        items:
+          type: string
+        type: array
+    type: object
+  api.HTTPGetProbe:
+    properties:
+      httpHeaders:
+        items:
+          $ref: '#/definitions/api.KVPair'
+        type: array
+      path:
+        type: string
+      port:
+        type: integer
+    type: object
+  api.Healthcheck:
+    properties:
+      exec:
+        $ref: '#/definitions/api.ExecProbe'
+      failureThreshold:
+        type: integer
+      httpGet:
+        $ref: '#/definitions/api.HTTPGetProbe'
+      initialDelaySeconds:
+        type: integer
+      periodSeconds:
+        type: integer
+      successThreshold:
+        type: integer
+      tcpSocket:
+        $ref: '#/definitions/api.TCPSocketProbe'
+      timeoutSeconds:
+        type: integer
+    type: object
+  api.Healthchecks:
+    additionalProperties:
+      $ref: '#/definitions/api.Healthcheck'
+    type: object
+  api.KVPair:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    type: object
+  api.Key:
+    properties:
+      created:
+        type: string
+      id:
+        type: string
+      owner:
+        type: string
+      public:
+        type: string
+      updated:
+        type: string
+      uuid:
+        type: string
+    type: object
+  api.KeyCreateRequest:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      public:
+        type: string
+    required:
+    - id
+    - public
+    type: object
+  api.KeyListResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.Key'
+        type: array
+      total:
+        type: integer
+    type: object
+  api.Labels:
+    additionalProperties: true
+    type: object
+  api.Plan:
+    properties:
+      autoscaling:
+        type: boolean
+      bandwidth_mbits:
+        description: Bandwidth, always in mbit/s
+        type: integer
+      cpu:
+        description: CPU represents cores
+        type: number
+      description:
+        type: string
+      hdd_mb:
+        description: HDD is app disk, always in Megabyte
+        type: integer
+      permutation:
+        type: string
+      persistency:
+        type: boolean
+      plan:
+        type: string
+      price_hour:
+        description: Price is euro cents per hour
+        type: number
+      ram_mb:
+        description: RAM is app memory, always in Megabyte
+        type: integer
+      sku:
+        description: SKU is a plan identifier which is immutable
+        type: string
+      storage_upgrades:
+        type: boolean
+    type: object
+  api.PlanListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/api.Plan'
+        type: array
+    type: object
+  api.Pods:
+    properties:
+      name:
+        type: string
+      release:
+        type: string
+      started:
+        type: string
+      state:
+        type: string
+      type:
+        type: string
+    type: object
+  api.Policy:
+    properties:
+      app:
+        type: string
+      from:
+        type: string
+      name:
+        type: string
+    type: object
+  api.PolicyResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.Policy'
+        type: array
+      status:
+        type: string
+    type: object
+  api.Region:
+    properties:
+      continent:
+        type: string
+      country:
+        type: string
+      country_code:
+        type: string
+      id:
+        type: string
+      live_status:
+        type: boolean
+      name:
+        type: string
+    type: object
+  api.RegionsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/api.Region'
+        type: array
+      status:
+        type: string
+    type: object
+  api.RootDomain:
+    properties:
+      created:
+        type: string
+      domain:
+        type: string
+      lastcheck:
+        type: string
+      lastcheckmsg:
+        type: string
+      owner:
+        type: string
+      txtrecord:
+        type: string
+      updated:
+        type: string
+      verified:
+        type: boolean
+    type: object
+  api.RootDomainListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/api.RootDomain'
+        type: array
+      status:
+        type: string
+    type: object
+  api.RootDomainResponse:
+    properties:
+      data:
+        $ref: '#/definitions/api.RootDomain'
+      status:
+        type: string
+    type: object
+  api.Service:
+    properties:
+      credentials:
+        additionalProperties:
+          type: string
+        type: object
+      endpoints:
+        items:
+          $ref: '#/definitions/api.ServiceEndpoint'
+        type: array
+      has_backup:
+        type: boolean
+      name:
+        type: string
+      plan:
+        type: string
+      type:
+        type: string
+      version:
+        type: integer
+      volumes:
+        items:
+          $ref: '#/definitions/api.ServiceVolumeEntity'
+        type: array
+    type: object
+  api.ServiceCreateRequest:
+    properties:
+      name:
+        type: string
+      plan:
+        type: string
+      type:
+        enum:
+        - postgres
+        - cache
+        - s3
+        type: string
+      version:
+        type: integer
+    required:
+    - name
+    - plan
+    - version
+    type: object
+  api.ServiceEndpoint:
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+    type: object
+  api.ServiceUpdateRequest:
+    properties:
+      plan:
+        type: string
+    required:
+    - plan
+    type: object
+  api.ServiceVolumeEntity:
+    properties:
+      mountpoint:
+        type: string
+      name:
+        type: string
+      size:
+        type: string
+    type: object
+  api.TCPSocketProbe:
+    properties:
+      port:
+        type: integer
+    type: object
+  api.User:
+    properties:
+      date_joined:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      is_staff:
+        type: boolean
+      is_superuser:
+        type: boolean
+      last_login:
+        type: string
+      last_name:
+        type: string
+      username:
+        type: string
+    type: object
+  api.VolumeEntity:
+    properties:
+      app:
+        type: string
+      attachable:
+        type: boolean
+      deletable:
+        type: boolean
+      detachable:
+        type: boolean
+      mountpoint:
+        type: string
+      name:
+        type: string
+      resizable:
+        type: boolean
+      size:
+        type: string
+    type: object
+  api.VolumesResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.VolumeEntity'
+        type: array
+      status:
+        type: string
+    type: object
+  github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse:
+    properties:
+      errors:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+      status:
+        type: string
+    type: object
+  github_com_hostwithquantum_runway_sdk_api.Config:
+    properties:
+      app:
+        description: App is the app name. It cannot be updated at all right now.
+        type: string
+      cpu:
+        additionalProperties: true
+        description: |-
+          CPU is used to set process CPU limits. It can be set in terms of whole CPUs
+          (ex 1) or in milli units to reflect the number of CPU shares (ex 500m).
+        type: object
+      created:
+        description: Created is the time that the configuration was created and cannot
+          be updated.
+        type: string
+      ephemeral:
+        description: Ephemeral determines if an app has persistent storage attached
+          to it
+        type: boolean
+      healthcheck:
+        additionalProperties:
+          $ref: '#/definitions/api.Healthchecks'
+        description: Healthcheck is map of healthchecks for each process that the
+          application uses.
+        type: object
+      memory:
+        additionalProperties: true
+        description: |-
+          Memory is used to set process memory limits. The key is the process name
+          and the value is a number followed by a memory unit (G, M, K, or B). Ex: 200G
+        type: object
+      owner:
+        description: Owner is the app owner. It cannot be updated with config.Set().
+          See app.Transfer().
+        type: string
+      registry:
+        additionalProperties: true
+        description: |-
+          Registry is a key-value pair to provide authentication for docker registries.
+          The key is the username and the value is the password.
+        type: object
+      tags:
+        additionalProperties: true
+        description: Tags restrict applications to run on k8s nodes with that label.
+        type: object
+      termination_grace_period:
+        additionalProperties: true
+        description: |-
+          Timeout is used to set termination grace period. The key is the process name
+          and the value is a number in seconds, e.g. 30
+        type: object
+      updated:
+        description: Updated is the last time the configuration was changed and cannot
+          be updated.
+        type: string
+      uuid:
+        description: |-
+          UUID is a unique string reflecting the configuration in its current state.
+          It changes every time the configuration is changed and cannot be updated.
+        type: string
+      values:
+        additionalProperties: true
+        description: Values are exposed as environment variables to the app.
+        type: object
+    type: object
+  internal_endpoints.AppRestoreRequest:
+    properties:
+      id:
+        type: string
+    required:
+    - id
+    type: object
+  internal_endpoints.AppsPodsResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.Pods'
+        type: array
+      total:
+        type: integer
+    type: object
+  internal_endpoints.AppsRelease:
+    properties:
+      app:
+        type: string
+      build:
+        type: string
+      config:
+        type: string
+      created:
+        type: string
+      exception:
+        type: string
+      failed:
+        type: boolean
+      owner:
+        type: string
+      summary:
+        type: string
+      updated:
+        type: string
+      uuid:
+        type: string
+      version:
+        type: integer
+    type: object
+  internal_endpoints.AppsReleasesResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/internal_endpoints.AppsRelease'
+        type: array
+      total:
+        type: integer
+    type: object
+host: api.runway.horse
+info:
+  contact:
+    email: support@runway.horse
+    name: Runway
+    url: https://runway.horse/company/support/
+  description: API for managing applications, services, and infrastructure on Runway
+  license:
+    name: Proprietary
+    url: https://runway.horse/company/legal
+  termsOfService: https://runway.horse/company/legal/tos/
+  title: Runway Controller API
+  version: "1.0"
+paths:
+  /v3/apps:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of applications on Runway for the authenticated
+        user
+      parameters:
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: from
+        type: integer
+      - default: false
+        description: Include deleted apps
+        in: query
+        name: deleted
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of Runway apps
+          schema:
+            $ref: '#/definitions/api.AppList'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List Runway apps
+      tags:
+      - apps
+    patch:
+      consumes:
+      - application/json
+      description: Restores an application on Runway from a backup to a previous state
+      parameters:
+      - description: Restore request with backup ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_endpoints.AppRestoreRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully restored Runway app
+          schema:
+            $ref: '#/definitions/api.App'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App or backup not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Restore Runway app
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Creates a new application on Runway with the specified configuration
+      parameters:
+      - description: Application creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AppCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created Runway app
+          schema:
+            $ref: '#/definitions/api.App'
+        "400":
+          description: Invalid request or plan not supported
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "403":
+          description: Plan limits exceeded or insufficient permissions
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new Runway app
+      tags:
+      - apps
+  /v3/apps/{app}:
+    delete:
+      consumes:
+      - application/json
+      description: Permanently deletes an application on Runway and all associated
+        resources
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted Runway app
+        "400":
+          description: Cannot delete a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Runway app
+      tags:
+      - apps
+    get:
+      consumes:
+      - application/json
+      description: Returns detailed information about a specific application on Runway
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway app details
+          schema:
+            $ref: '#/definitions/api.App'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app details
+      tags:
+      - apps
+  /v3/apps/{app}/config:
+    get:
+      consumes:
+      - application/json
+      description: Returns the configuration variables for an application on Runway
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway app configuration
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway_sdk_api.Config'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app configuration
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Updates configuration variables for an application on Runway
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Configuration update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ConfigUnset'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated Runway app configuration
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway_sdk_api.Config'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Runway app configuration
+      tags:
+      - apps
+  /v3/apps/{app}/domains:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all domains for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of domains for Runway app
+          schema:
+            $ref: '#/definitions/api.DomainListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List app domains
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Creates a custom domain for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Domain creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.DomainCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created domain for Runway app
+          schema:
+            $ref: '#/definitions/api.Domain'
+        "400":
+          description: Invalid domain or domain already exists
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create app domain
+      tags:
+      - apps
+  /v3/apps/{app}/domains/{domain}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes a custom domain from a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Domain name
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully removed domain from Runway app
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App or domain not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Remove app domain
+      tags:
+      - apps
+  /v3/apps/{app}/exec:
+    get:
+      consumes:
+      - application/json
+      description: Executes a command inside a Runway app container via WebSocket
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Command to execute
+        in: query
+        name: command
+        type: string
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: WebSocket connection for command execution
+        "400":
+          description: Invalid request or app not running
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Execute command in Runway app
+      tags:
+      - apps
+  /v3/apps/{app}/permissions:
+    delete:
+      consumes:
+      - application/json
+      description: Revokes access permissions from a user for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Permission revoke request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AppPermissionDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully revoked permissions on Runway app
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App or permission not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Revoke app permissions
+      tags:
+      - apps
+    get:
+      consumes:
+      - application/json
+      description: Returns the list of users with access to a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of app permissions
+          schema:
+            $ref: '#/definitions/api.AppPermissionList'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get app permissions
+      tags:
+      - apps
+    put:
+      consumes:
+      - application/json
+      description: Grants access permissions to a user for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Permission grant request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AppPermissionPutRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully granted permissions for Runway app
+        "400":
+          description: Invalid request or user not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Grant app permissions
+      tags:
+      - apps
+  /v3/apps/{app}/plan:
+    put:
+      consumes:
+      - application/json
+      description: Changes the plan of a Runway app and redeploys if already deployed
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Plan change request
+        in: body
+        name: request
+        required: true
+        schema: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully changed Runway app plan
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request or plan not supported
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Change Runway app plan
+      tags:
+      - apps
+  /v3/apps/{app}/pods:
+    get:
+      consumes:
+      - application/json
+      description: Returns information about running pods for an application on Runway
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway app pods information
+          schema:
+            $ref: '#/definitions/internal_endpoints.AppsPodsResponse'
+        "400":
+          description: No pods info for a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app pods
+      tags:
+      - apps
+  /v3/apps/{app}/releases:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of releases for an application on Runway
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: from
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway app releases
+          schema:
+            $ref: '#/definitions/internal_endpoints.AppsReleasesResponse'
+        "400":
+          description: No releases info for a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app releases
+      tags:
+      - apps
+  /v3/apps/{app}/restart:
+    post:
+      consumes:
+      - application/json
+      description: Restarts an application on Runway by performing a rolling restart
+        of all pods
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully restarted Runway app
+        "400":
+          description: Cannot restart a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Restart Runway app
+      tags:
+      - apps
+  /v3/apps/{app}/settings:
+    get:
+      consumes:
+      - application/json
+      description: Returns the configuration settings for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway app settings
+          schema:
+            $ref: '#/definitions/api.AppSettings'
+        "400":
+          description: Invalid request or not an app
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App or settings not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app settings
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Updates the configuration settings for a Runway app
+      parameters:
+      - description: App name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: App settings update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AppSettings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated Runway app settings
+          schema:
+            $ref: '#/definitions/api.AppSettings'
+        "400":
+          description: Invalid request or not an app
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Runway app settings
+      tags:
+      - apps
+  /v3/apps/metrics/{rest}:
+    get:
+      consumes:
+      - application/json
+      description: Proxies metrics requests to the monitoring backend for Runway applications
+      parameters:
+      - description: Metrics endpoint path
+        in: path
+        name: rest
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Metrics data
+          schema: {}
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app metrics
+      tags:
+      - apps
+    post:
+      consumes:
+      - application/json
+      description: Proxies metrics requests to the monitoring backend for Runway applications
+      parameters:
+      - description: Metrics endpoint path
+        in: path
+        name: rest
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Metrics data
+          schema: {}
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app metrics
+      tags:
+      - apps
+  /v3/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns session information for Runway
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated
+          schema:
+            $ref: '#/definitions/api.AuthLoginResponse'
+        "400":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: Authenticate user
+      tags:
+      - auth
+  /v3/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logs out the current user from Runway and invalidates the session
+      parameters:
+      - description: Logout request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AuthLogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged out
+          schema:
+            $ref: '#/definitions/api.AuthLogoutResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: Logout from Runway
+      tags:
+      - auth
+  /v3/auth/whoami:
+    get:
+      consumes:
+      - application/json
+      description: Returns information about the currently authenticated user on Runway
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current user information
+          schema:
+            $ref: '#/definitions/api.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get current user information
+      tags:
+      - auth
+  /v3/domains:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all domains configured on Runway for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of domains
+          schema:
+            $ref: '#/definitions/api.RootDomainListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List domains
+      tags:
+      - domains
+    post:
+      consumes:
+      - application/json
+      description: Creates a new domain configuration on Runway
+      parameters:
+      - description: Domain creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.DomainCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created domain
+          schema:
+            $ref: '#/definitions/api.Domain'
+        "400":
+          description: Invalid request or domain already exists
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create domain
+      tags:
+      - domains
+  /v3/domains/{domain}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes a domain configuration from Runway
+      parameters:
+      - description: Domain name
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted domain
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Domain not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete domain
+      tags:
+      - domains
+  /v3/domains/{domain}/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verifies domain ownership by checking DNS records on Runway
+      parameters:
+      - description: Domain name
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Domain verification result
+          schema:
+            $ref: '#/definitions/api.RootDomainResponse'
+        "400":
+          description: Invalid domain or verification failed
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Domain not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Verify domain ownership
+      tags:
+      - domains
+  /v3/keys:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of SSH keys configured on Runway for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of SSH keys
+          schema:
+            $ref: '#/definitions/api.KeyListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List SSH keys
+      tags:
+      - keys
+    post:
+      consumes:
+      - application/json
+      description: Adds a new SSH key to Runway for the authenticated user
+      parameters:
+      - description: SSH key creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.KeyCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created SSH key
+          schema:
+            $ref: '#/definitions/api.Key'
+        "400":
+          description: Invalid SSH key or key already exists
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add SSH key
+      tags:
+      - keys
+  /v3/keys/{keyid}:
+    delete:
+      consumes:
+      - application/json
+      description: Removes an SSH key from Runway
+      parameters:
+      - description: SSH key ID
+        in: path
+        name: keyid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted SSH key
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: SSH key not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete SSH key
+      tags:
+      - keys
+  /v3/plans:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all available plans on Runway
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available plans
+          schema:
+            $ref: '#/definitions/api.PlanListResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: List available plans
+      tags:
+      - plans
+  /v3/policies:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all backup and retention policies for Runway
+        services
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of service policies
+          schema:
+            $ref: '#/definitions/api.PolicyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List service policies
+      tags:
+      - policies
+  /v3/regions:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all available deployment regions on Runway
+      parameters:
+      - description: Include all regions (including inactive ones)
+        in: query
+        name: all
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available regions
+          schema:
+            $ref: '#/definitions/api.RegionsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: List available regions
+      tags:
+      - regions
+  /v3/services:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of database services on Runway for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of Runway services
+          schema:
+            items:
+              $ref: '#/definitions/api.Service'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List Runway services
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      description: Creates a new database service on Runway with the specified configuration
+      parameters:
+      - description: Service creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ServiceCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created Runway service
+          schema:
+            $ref: '#/definitions/api.Service'
+        "400":
+          description: Invalid request or plan not supported
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "403":
+          description: Plan limits exceeded
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Runway service
+      tags:
+      - services
+  /v3/services/{app}:
+    delete:
+      consumes:
+      - application/json
+      description: Permanently deletes a database service on Runway and all associated
+        data
+      parameters:
+      - description: Service name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted Runway service
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Runway service
+      tags:
+      - services
+    get:
+      consumes:
+      - application/json
+      description: Returns detailed information about a specific database service
+        on Runway
+      parameters:
+      - description: Service name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Runway service details
+          schema:
+            $ref: '#/definitions/api.Service'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway service details
+      tags:
+      - services
+    put:
+      consumes:
+      - application/json
+      description: Updates a database service on Runway (e.g., change plan)
+      parameters:
+      - description: Service name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Service update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ServiceUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated Runway service
+          schema:
+            $ref: '#/definitions/api.Service'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Runway service
+      tags:
+      - services
+  /v3/volumes:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all storage volumes on Runway for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of volumes
+          schema:
+            $ref: '#/definitions/api.VolumesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List volumes
+      tags:
+      - volumes
+securityDefinitions:
+  ApiKeyAuth:
+    description: Bearer token for API authentication
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
