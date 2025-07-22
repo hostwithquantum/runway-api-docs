@@ -1,0 +1,33 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  runway:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: runway-api-docs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: create public/private key on GHA
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.RUNWAY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.RUNWAY_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 0600 ~/.ssh/id_rsa*
+      - uses: hostwithquantum/setup-runway@v0.4.0
+        with:
+          username: ${{ secrets.RUNWAY_USERNAME }}
+          password: ${{ secrets.RUNWAY_PASSWORD }}
+          setup-ssh: true
+      - run: runway app create -a $APP_NAME || runway gitremote -a $APP_NAME
+      - run: |
+          runway app config set \
+            BP_GO_TARGETS=./cmd/server \
+            PORT=8484
+      - run: runway app deploy
