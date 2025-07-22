@@ -137,6 +137,34 @@ definitions:
           type: string
         type: array
     type: object
+  api.AuthLoginOIDCRequest:
+    properties:
+      exchange_code:
+        type: string
+      token:
+        type: string
+    required:
+    - exchange_code
+    - token
+    type: object
+  api.AuthLoginOIDCResponse:
+    properties:
+      data:
+        $ref: '#/definitions/api.AuthLoginOIDCResponseData'
+      status:
+        type: string
+    type: object
+  api.AuthLoginOIDCResponseData:
+    properties:
+      action:
+        type: string
+      exchange_code:
+        type: string
+      provider:
+        items:
+          type: string
+        type: array
+    type: object
   api.AuthLoginResponse:
     properties:
       token:
@@ -565,6 +593,7 @@ definitions:
         type: string
     type: object
   github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse:
+    description: Standard error response with status and field-specific errors
     properties:
       errors:
         additionalProperties:
@@ -573,6 +602,7 @@ definitions:
           type: array
         type: object
       status:
+        example: error
         type: string
     type: object
   github_com_hostwithquantum_runway_sdk_api.Config:
@@ -1589,6 +1619,67 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       summary: Authenticate user
+      tags:
+      - auth
+  /v3/auth/login/oidc:
+    get:
+      consumes:
+      - application/json
+      description: Starts an OIDC flow for the CLI
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Flow started
+          schema:
+            $ref: '#/definitions/api.AuthLoginOIDCResponse'
+        "409":
+          description: User is already logged in
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "501":
+          description: No OIDC enabled
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: Start an OIDC flow
+      tags:
+      - auth
+    post:
+      consumes:
+      - application/json
+      description: Finishes an OIDC flow for the CLI (exchanges exchange token and
+        code for a session token)
+      parameters:
+      - description: Exchange token and code
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AuthLoginOIDCRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged in
+          schema:
+            $ref: '#/definitions/api.AuthLoginResponse'
+        "409":
+          description: User is already logged in
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "417":
+          description: Failed to complete the flow
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      summary: Finish an OIDC flow
       tags:
       - auth
   /v3/auth/logout:

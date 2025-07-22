@@ -1375,6 +1375,97 @@
                 }
             }
         },
+        "/v3/auth/login/oidc": {
+            "get": {
+                "description": "Starts an OIDC flow for the CLI",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Start an OIDC flow",
+                "responses": {
+                    "200": {
+                        "description": "Flow started",
+                        "schema": {
+                            "$ref": "#/definitions/api.AuthLoginOIDCResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "User is already logged in",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "501": {
+                        "description": "No OIDC enabled",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Finishes an OIDC flow for the CLI (exchanges exchange token and code for a session token)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Finish an OIDC flow",
+                "parameters": [
+                    {
+                        "description": "Exchange token and code",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AuthLoginOIDCRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logged in",
+                        "schema": {
+                            "$ref": "#/definitions/api.AuthLoginResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "User is already logged in",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "417": {
+                        "description": "Failed to complete the flow",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/auth/logout": {
             "post": {
                 "description": "Logs out the current user from Runway and invalidates the session",
@@ -2432,6 +2523,49 @@
                 }
             }
         },
+        "api.AuthLoginOIDCRequest": {
+            "type": "object",
+            "required": [
+                "exchange_code",
+                "token"
+            ],
+            "properties": {
+                "exchange_code": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.AuthLoginOIDCResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/api.AuthLoginOIDCResponseData"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.AuthLoginOIDCResponseData": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "exchange_code": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "api.AuthLoginResponse": {
             "type": "object",
             "required": [
@@ -3084,6 +3218,7 @@
             }
         },
         "github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse": {
+            "description": "Standard error response with status and field-specific errors",
             "type": "object",
             "properties": {
                 "errors": {
@@ -3096,7 +3231,8 @@
                     }
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "error"
                 }
             }
         },
