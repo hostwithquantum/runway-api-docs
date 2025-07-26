@@ -1,0 +1,13 @@
+{
+  "name": "runway-api-docs",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "rapidoc": "^9.3.8",
+    "vite": "^5.3.4"
+  }
+}
