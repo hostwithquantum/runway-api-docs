@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/hostwithquantum/runway-api-docs/docs"
+	"github.com/hostwithquantum/runway-api-docs/docs"
+	"github.com/hostwithquantum/runway-api-docs/static"
 
 	"github.com/gorilla/mux"
-	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 var listen string
@@ -33,12 +33,45 @@ func init() {
 
 func main() {
 	r := mux.NewRouter()
-	r.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	r.PathPrefix("/swagger").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/", http.StatusPermanentRedirect)
+	})
+	r.HandleFunc("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(docs.SwaggerJSON)
+	})
+	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "https://ui.runway.horse/favicon.ico", http.StatusPermanentRedirect)
+	})
+	r.HandleFunc("/rapidoc.js", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/javascript")
+		w.Write(static.RapidocJS)
+	})
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `Go to <a href="/swagger/index.html">Swagger</a>`)
-	}))
-	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
+		fmt.Fprint(w, `<!DOCTYPE html>
+<html>
+<head>
+	<title>Runway API Documentation</title>
+	<script defer data-api="https://www.runway.horse/api/event" data-domain="runway.horse" src="https://www.runway.horse/js/script.js"></script>
+</head>
+<body>
+	<rapi-doc
+		allow-authentication ='false'
+		allow-server-selection='true'
+		schema-style='table'
+		show-header='false'
+		spec-url='/docs/swagger.json'
+		theme='light'>
+		<img
+			slot="nav-logo"
+			src="https://www.runway.horse/img/runway-logo-silverphoenix.svg"
+		/>
+	</rapi-doc>
+	<script src="/rapidoc.js"></script>
+</body>
+</html>`)
+	})
 
 	log.Info("Running on " + listen)
 	http.ListenAndServe(listen, r)
