@@ -7,6 +7,9 @@ on:
 
 jobs:
   runway:
+    environment:
+      name: production
+      url: https://runway-api-docs.pqapp.dev/
     runs-on: ubuntu-latest
     env:
       APP_NAME: runway-api-docs
