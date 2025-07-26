@@ -58,7 +58,8 @@ func main() {
 <body>
 	<rapi-doc
 		allow-authentication ='false'
-		allow-server-selection='true'
+		allow-server-selection='false'
+		server-url='https://api.runway.horse'
 		schema-style='table'
 		show-header='false'
 		spec-url='/docs/swagger.json'
