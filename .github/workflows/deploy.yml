@@ -29,8 +29,5 @@ jobs:
           password: ${{ secrets.RUNWAY_PASSWORD }}
           setup-ssh: true
       - run: runway app create -a $APP_NAME || runway gitremote -a $APP_NAME
-      - run: |
-          runway app config set \
-            BP_GO_TARGETS=./cmd/server \
-            PORT=8484
+      - run: runway app config set PORT=8484
       - run: runway app deploy

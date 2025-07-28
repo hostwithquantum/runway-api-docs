@@ -24,4 +24,36 @@ jobs:
         run: |
           npm ci
           npm run build
-        
+
+  preview:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    needs: [go,js]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write 
+    env:
+      APP_NAME: api-docs-pr-${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: create public/private key on GHA
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.RUNWAY_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.RUNWAY_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 0600 ~/.ssh/id_rsa*
+      - uses: hostwithquantum/setup-runway@v0.4.0
+        with:
+          username: ${{ secrets.RUNWAY_USERNAME }}
+          password: ${{ secrets.RUNWAY_PASSWORD }}
+          setup-ssh: true
+      - run: runway app create -a $APP_NAME || runway gitremote -a $APP_NAME
+      - run: runway app config set PORT=8484
+      - run: runway app deploy
+      - uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ github.event.number }}
+          message: |
+            Deployed a preview: https://${{ env.APP_NAME }}.pqapp.dev
