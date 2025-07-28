@@ -17,7 +17,6 @@ jobs:
         with:
           username: ${{ secrets.RUNWAY_USERNAME }}
           password: ${{ secrets.RUNWAY_PASSWORD }}
-          setup-ssh: true
       - name: delete app
         run: runway app rm -y -a $APP_NAME || true
       - uses: thollander/actions-comment-pull-request@v3
