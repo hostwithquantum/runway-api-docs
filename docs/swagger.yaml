@@ -137,6 +137,25 @@ definitions:
           type: string
         type: array
     type: object
+  api.AppsPodsResponse:
+    properties:
+      count:
+        type: integer
+      integrations:
+        items:
+          type: string
+        type: array
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.Pods'
+        type: array
+      total:
+        type: integer
+    type: object
   api.AuthLoginOIDCRequest:
     properties:
       exchange_code:
@@ -369,6 +388,10 @@ definitions:
     type: object
   api.Pods:
     properties:
+      integrations:
+        items:
+          type: string
+        type: array
       name:
         type: string
       release:
@@ -676,21 +699,6 @@ definitions:
         type: string
     required:
     - id
-    type: object
-  internal_endpoints.AppsPodsResponse:
-    properties:
-      count:
-        type: integer
-      next:
-        type: string
-      previous:
-        type: string
-      results:
-        items:
-          $ref: '#/definitions/api.Pods'
-        type: array
-      total:
-        type: integer
     type: object
   internal_endpoints.AppsRelease:
     properties:
@@ -1352,7 +1360,7 @@ paths:
         "200":
           description: Runway app pods information
           schema:
-            $ref: '#/definitions/internal_endpoints.AppsPodsResponse'
+            $ref: '#/definitions/api.AppsPodsResponse'
         "400":
           description: No pods info for a service
           schema:

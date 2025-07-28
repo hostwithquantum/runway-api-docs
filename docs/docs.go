@@ -969,7 +969,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Runway app pods information",
                         "schema": {
-                            "$ref": "#/definitions/internal_endpoints.AppsPodsResponse"
+                            "$ref": "#/definitions/api.AppsPodsResponse"
                         }
                     },
                     "400": {
@@ -2437,6 +2437,35 @@ const docTemplate = `{
                 }
             }
         },
+        "api.AppsPodsResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "integrations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "next": {
+                    "type": "string"
+                },
+                "previous": {
+                    "type": "string"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Pods"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.AuthLoginOIDCRequest": {
             "type": "object",
             "required": [
@@ -2790,6 +2819,12 @@ const docTemplate = `{
         "api.Pods": {
             "type": "object",
             "properties": {
+                "integrations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
@@ -3224,29 +3259,6 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "type": "string"
-                }
-            }
-        },
-        "internal_endpoints.AppsPodsResponse": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "next": {
-                    "type": "string"
-                },
-                "previous": {
-                    "type": "string"
-                },
-                "results": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/api.Pods"
-                    }
-                },
-                "total": {
-                    "type": "integer"
                 }
             }
         },
