@@ -2162,6 +2162,43 @@ paths:
       summary: Update Runway service
       tags:
       - services
+  /v3/services/{app}/restart:
+    post:
+      consumes:
+      - application/json
+      description: Restarts a Runway service by performing a rolling restart.
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully restarted Runway app
+        "400":
+          description: Cannot restart a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Restart a service
+      tags:
+      - apps
   /v3/volumes:
     get:
       consumes:
