@@ -649,6 +649,12 @@ const docTemplate = `{
                         "description": "Command to execute",
                         "name": "command",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Process type (cmd or worker)",
+                        "name": "process",
+                        "in": "query"
                     }
                 ],
                 "responses": {

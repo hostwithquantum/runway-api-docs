@@ -1152,6 +1152,10 @@ paths:
         in: query
         name: command
         type: string
+      - description: Process type (cmd or worker)
+        in: query
+        name: process
+        type: string
       produces:
       - application/json
       responses:
