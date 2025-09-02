@@ -1022,7 +1022,7 @@ const docTemplate = `{
                 "tags": [
                     "apps"
                 ],
-                "summary": "Get Runway app releases",
+                "summary": "Get Runway app releases (of the last 2 weeks)",
                 "parameters": [
                     {
                         "type": "string",

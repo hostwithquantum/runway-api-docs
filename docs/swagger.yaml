@@ -1427,7 +1427,7 @@ paths:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
       - ApiKeyAuth: []
-      summary: Get Runway app releases
+      summary: Get Runway app releases (of the last 2 weeks)
       tags:
       - apps
   /v3/apps/{app}/restart:
