@@ -232,14 +232,22 @@ definitions:
         type: string
       owner:
         type: string
+      path:
+        type: string
       root:
         $ref: '#/definitions/api.RootDomain'
+      targetPath:
+        type: string
       updated:
         type: string
     type: object
   api.DomainCreateRequest:
     properties:
       domain:
+        type: string
+      path:
+        type: string
+      targetPath:
         type: string
     required:
     - domain
@@ -1110,6 +1118,14 @@ paths:
         in: path
         name: domain
         required: true
+        type: string
+      - description: Prefix-Path (defaults to '/')
+        in: query
+        name: path
+        type: string
+      - description: Rewrite target (path that the app sees, defaults to '/')
+        in: query
+        name: targetPath
         type: string
       produces:
       - application/json

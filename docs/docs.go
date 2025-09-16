@@ -585,6 +585,18 @@ const docTemplate = `{
                         "name": "domain",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Prefix-Path (defaults to '/')",
+                        "name": "path",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Rewrite target (path that the app sees, defaults to '/')",
+                        "name": "targetPath",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2647,8 +2659,14 @@ const docTemplate = `{
                 "owner": {
                     "type": "string"
                 },
+                "path": {
+                    "type": "string"
+                },
                 "root": {
                     "$ref": "#/definitions/api.RootDomain"
+                },
+                "targetPath": {
+                    "type": "string"
                 },
                 "updated": {
                     "type": "string"
@@ -2662,6 +2680,12 @@ const docTemplate = `{
             ],
             "properties": {
                 "domain": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "targetPath": {
                     "type": "string"
                 }
             }
