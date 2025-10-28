@@ -2354,6 +2354,9 @@ const docTemplate = `{
                 },
                 "updated": {
                     "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
                 }
             }
         },
