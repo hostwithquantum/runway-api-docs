@@ -2488,6 +2488,10 @@ const docTemplate = `{
                 "label": {
                     "$ref": "#/definitions/api.Labels"
                 },
+                "lockdown": {
+                    "description": "Lockdown determines if the application is in lockdown mode.",
+                    "type": "boolean"
+                },
                 "maintenance": {
                     "description": "Maintenance determines if the application is taken down for maintenance or not.",
                     "type": "boolean"
