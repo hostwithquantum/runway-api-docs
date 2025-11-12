@@ -231,6 +231,8 @@ definitions:
         type: string
       created:
         type: string
+      creatorName:
+        type: string
       deletable:
         type: boolean
       domain:

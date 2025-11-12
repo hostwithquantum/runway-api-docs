@@ -2657,6 +2657,9 @@ const docTemplate = `{
                 "created": {
                     "type": "string"
                 },
+                "creatorName": {
+                    "type": "string"
+                },
                 "deletable": {
                     "type": "boolean"
                 },
