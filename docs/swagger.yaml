@@ -97,6 +97,13 @@ definitions:
     - AppPermissionRoleOwner
     - AppPermissionRoleDeveloper
     - AppPermissionRoleViewer
+  api.AppRestoreRequest:
+    properties:
+      id:
+        type: string
+    required:
+    - id
+    type: object
   api.AppSettings:
     properties:
       app:
@@ -719,13 +726,6 @@ definitions:
         description: Values are exposed as environment variables to the app.
         type: object
     type: object
-  internal_endpoints.AppRestoreRequest:
-    properties:
-      id:
-        type: string
-    required:
-    - id
-    type: object
   internal_endpoints.AppsRelease:
     properties:
       app:
@@ -827,7 +827,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/internal_endpoints.AppRestoreRequest'
+          $ref: '#/definitions/api.AppRestoreRequest'
       produces:
       - application/json
       responses:

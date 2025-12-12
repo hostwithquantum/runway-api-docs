@@ -158,7 +158,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_endpoints.AppRestoreRequest"
+                            "$ref": "#/definitions/api.AppRestoreRequest"
                         }
                     }
                 ],
@@ -2468,6 +2468,17 @@ const docTemplate = `{
                 "AppPermissionRoleViewer"
             ]
         },
+        "api.AppRestoreRequest": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "api.AppSettings": {
             "type": "object",
             "properties": {
@@ -3363,17 +3374,6 @@ const docTemplate = `{
                     "description": "Values are exposed as environment variables to the app.",
                     "type": "object",
                     "additionalProperties": true
-                }
-            }
-        },
-        "internal_endpoints.AppRestoreRequest": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string"
                 }
             }
         },
