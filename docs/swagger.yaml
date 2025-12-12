@@ -450,11 +450,22 @@ definitions:
         type: string
       country_code:
         type: string
+      dns:
+        $ref: '#/definitions/api.RegionDNS'
       id:
         type: string
       live_status:
         type: boolean
       name:
+        type: string
+    type: object
+  api.RegionDNS:
+    properties:
+      a_record:
+        type: string
+      base_domain:
+        type: string
+      cname_record:
         type: string
     type: object
   api.RegionsResponse:

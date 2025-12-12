@@ -2989,6 +2989,9 @@ const docTemplate = `{
                 "country_code": {
                     "type": "string"
                 },
+                "dns": {
+                    "$ref": "#/definitions/api.RegionDNS"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -2996,6 +2999,20 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.RegionDNS": {
+            "type": "object",
+            "properties": {
+                "a_record": {
+                    "type": "string"
+                },
+                "base_domain": {
+                    "type": "string"
+                },
+                "cname_record": {
                     "type": "string"
                 }
             }
