@@ -7,8 +7,8 @@ jobs:
   go:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
           go-version-file: 'go.mod'
       - run: go build -o test ./cmd/server/...
@@ -16,8 +16,8 @@ jobs:
   js:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
       - working-directory: js
@@ -35,10 +35,10 @@ jobs:
     env:
       APP_NAME: api-docs-pr-${{ github.event.number }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: hostwithquantum/setup-runway@v0.5.0
+      - uses: hostwithquantum/setup-runway@v0.5.1
         with:
           application: ${{ env.APP_NAME }}
           username: ${{ secrets.RUNWAY_USERNAME }}

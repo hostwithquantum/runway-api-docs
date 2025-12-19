@@ -14,10 +14,10 @@ jobs:
     env:
       APP_NAME: runway-api-docs
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: hostwithquantum/setup-runway@v0.5.0
+      - uses: hostwithquantum/setup-runway@v0.5.1
         with:
           application: ${{ env.APP_NAME }}
           username: ${{ secrets.RUNWAY_USERNAME }}
