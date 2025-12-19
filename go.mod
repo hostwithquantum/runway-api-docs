@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/gorilla/mux v1.8.1
-	github.com/swaggo/swag v1.16.5
+	github.com/swaggo/swag v1.16.6
 )
 
 require (
