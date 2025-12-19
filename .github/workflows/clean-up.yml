@@ -10,8 +10,8 @@ jobs:
     env:
       APP_NAME: api-docs-pr-${{ github.event.number }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: hostwithquantum/setup-runway@v0.5.0
+      - uses: actions/checkout@v6
+      - uses: hostwithquantum/setup-runway@v0.5.1
         with:
           username: ${{ secrets.RUNWAY_USERNAME }}
           password: ${{ secrets.RUNWAY_PASSWORD }}
