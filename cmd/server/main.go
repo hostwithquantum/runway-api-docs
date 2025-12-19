@@ -15,13 +15,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var listen string
-var version = "dev"
+var (
+	listen  string
+	version = "dev"
+	base    = ""
+)
 
 func init() {
 	// set port
 	if os.Getenv("PORT") != "" {
 		listen = ":" + os.Getenv("PORT")
+		base = "/api-docs"
 	} else {
 		listen = ":8484"
 	}
@@ -33,23 +37,41 @@ func init() {
 
 func main() {
 	r := mux.NewRouter()
-	r.PathPrefix("/swagger").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			log.Info("request", "method", r.Method, "path", r.URL.Path)
+			next.ServeHTTP(w, r)
+		})
+	})
+	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Warn("not found", "method", r.Method, "path", r.URL.Path)
+		http.NotFound(w, r)
+	})
+
+	if base != "" {
+		r.HandleFunc(base, func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, base+"/", http.StatusMovedPermanently)
+		})
+	}
+
+	s := r.PathPrefix(base).Subrouter()
+	s.PathPrefix("/swagger").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusPermanentRedirect)
 	})
-	r.HandleFunc("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+	s.HandleFunc("/docs/swagger.json", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(docs.SwaggerJSON)
 	})
-	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+	s.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "https://ui.runway.horse/favicon.ico", http.StatusPermanentRedirect)
 	})
-	r.HandleFunc("/rapidoc.js", func(w http.ResponseWriter, r *http.Request) {
+	s.HandleFunc("/rapidoc.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript")
 		w.Write(static.RapidocJS)
 	})
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	s.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprint(w, `<!DOCTYPE html>
+		fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
 <head>
 	<title>Runway API Documentation</title>
@@ -62,16 +84,16 @@ func main() {
 		server-url='https://api.runway.horse'
 		schema-style='table'
 		show-header='false'
-		spec-url='/docs/swagger.json'
+		spec-url='%s/docs/swagger.json'
 		theme='light'>
 		<img
 			slot="nav-logo"
 			src="https://www.runway.horse/img/runway-logo-silverphoenix.svg"
 		/>
 	</rapi-doc>
-	<script src="/rapidoc.js"></script>
+	<script src="%s/rapidoc.js"></script>
 </body>
-</html>`)
+</html>`, base, base)
 	})
 
 	log.Info("Running on " + listen)

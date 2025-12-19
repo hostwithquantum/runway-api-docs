@@ -51,4 +51,4 @@ jobs:
         with:
           pr-number: ${{ github.event.number }}
           message: |
-            Deployed a preview: https://${{ env.APP_NAME }}.pqapp.dev
+            Deployed a preview: https://${{ env.APP_NAME }}.pqapp.dev/api-docs
