@@ -544,8 +544,70 @@ definitions:
           $ref: '#/definitions/api.ServiceVolumeEntity'
         type: array
     type: object
+  api.ServiceBackup:
+    properties:
+      created:
+        type: string
+      name:
+        type: string
+      phase:
+        type: string
+      updated:
+        type: string
+    type: object
+  api.ServiceBackupCreateResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  api.ServiceBackupDeleteRequest:
+    properties:
+      backup:
+        description: Backup is the name of the backup to delete
+        type: string
+      name:
+        description: Name is the name of the service the backup belongs to
+        type: string
+    required:
+    - backup
+    - name
+    type: object
+  api.ServiceBackupDeleteResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  api.ServiceBackupListResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.ServiceBackup'
+        type: array
+      total:
+        type: integer
+    type: object
+  api.ServiceCreateBootstrap:
+    properties:
+      backup:
+        description: Backup is the name of a backup to use for the bootstrap
+        type: string
+      name:
+        description: Name is the name of the cluster to bootstrap from
+        type: string
+    required:
+    - backup
+    - name
+    type: object
   api.ServiceCreateRequest:
     properties:
+      bootstrap_from:
+        $ref: '#/definitions/api.ServiceCreateBootstrap'
       name:
         type: string
       plan:
@@ -2198,6 +2260,116 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update Runway service
+      tags:
+      - services
+  /v3/services/{app}/backups:
+    get:
+      consumes:
+      - application/json
+      description: Lists all backups for a service on Runway
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved backup list
+          schema:
+            $ref: '#/definitions/api.ServiceBackupListResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found or unauthorized
+          schema:
+            $ref: '#/definitions/api.ServiceBackupListResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List service backups
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      description: Creates an immediate backup for a service on Runway
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Backup creation initiated
+          schema:
+            $ref: '#/definitions/api.ServiceBackupCreateResponse'
+        "400":
+          description: Invalid request or name mismatch
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found or unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "424":
+          description: Failed to submit backup job
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create immediate backup
+      tags:
+      - services
+  /v3/services/{app}/backups/{name}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specific backup for a service on Runway
+      parameters:
+      - description: Service name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Backup delete request
+        in: body
+        name: backup
+        required: true
+        schema:
+          $ref: '#/definitions/api.ServiceBackupDeleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Backup deleted successfully
+          schema:
+            $ref: '#/definitions/api.ServiceBackupDeleteResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Service not found or unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "501":
+          description: Not implemented
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete service backup
       tags:
       - services
   /v3/services/{app}/restart:

@@ -2216,6 +2216,178 @@
                 }
             }
         },
+        "/v3/services/{app}/backups": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Lists all backups for a service on Runway",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "List service backups",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved backup list",
+                        "schema": {
+                            "$ref": "#/definitions/api.ServiceBackupListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found or unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.ServiceBackupListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates an immediate backup for a service on Runway",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Create immediate backup",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Backup creation initiated",
+                        "schema": {
+                            "$ref": "#/definitions/api.ServiceBackupCreateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or name mismatch",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found or unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "424": {
+                        "description": "Failed to submit backup job",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v3/services/{app}/backups/{name}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Deletes a specific backup for a service on Runway",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Delete service backup",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Backup delete request",
+                        "name": "backup",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ServiceBackupDeleteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Backup deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/api.ServiceBackupDeleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Service not found or unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "501": {
+                        "description": "Not implemented",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/services/{app}/restart": {
             "post": {
                 "security": [
@@ -3128,6 +3300,96 @@
                 }
             }
         },
+        "api.ServiceBackup": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phase": {
+                    "type": "string"
+                },
+                "updated": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ServiceBackupCreateResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ServiceBackupDeleteRequest": {
+            "type": "object",
+            "required": [
+                "backup",
+                "name"
+            ],
+            "properties": {
+                "backup": {
+                    "description": "Backup is the name of the backup to delete",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the name of the service the backup belongs to",
+                    "type": "string"
+                }
+            }
+        },
+        "api.ServiceBackupDeleteResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ServiceBackupListResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "previous": {
+                    "type": "string"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.ServiceBackup"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.ServiceCreateBootstrap": {
+            "type": "object",
+            "required": [
+                "backup",
+                "name"
+            ],
+            "properties": {
+                "backup": {
+                    "description": "Backup is the name of a backup to use for the bootstrap",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name is the name of the cluster to bootstrap from",
+                    "type": "string"
+                }
+            }
+        },
         "api.ServiceCreateRequest": {
             "type": "object",
             "required": [
@@ -3136,6 +3398,9 @@
                 "version"
             ],
             "properties": {
+                "bootstrap_from": {
+                    "$ref": "#/definitions/api.ServiceCreateBootstrap"
+                },
                 "name": {
                     "type": "string"
                 },
