@@ -2331,6 +2331,69 @@ const docTemplate = `{
             }
         },
         "/v3/services/{app}/backups/{name}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Generates a presigned URL to download a specific backup for a service on Runway",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Download service backup",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service name",
+                        "name": "app",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Backup name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Presigned download URL",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Service or backup not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "424": {
+                        "description": "Failed to generate download URL",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -2355,15 +2418,6 @@ const docTemplate = `{
                         "name": "name",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Backup delete request",
-                        "name": "backup",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.ServiceBackupDeleteRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -3327,23 +3381,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.ServiceBackupDeleteRequest": {
-            "type": "object",
-            "required": [
-                "backup",
-                "name"
-            ],
-            "properties": {
-                "backup": {
-                    "description": "Backup is the name of the backup to delete",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Name is the name of the service the backup belongs to",
                     "type": "string"
                 }
             }
