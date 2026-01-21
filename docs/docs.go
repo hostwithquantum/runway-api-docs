@@ -3419,16 +3419,19 @@ const docTemplate = `{
         "api.ServiceCreateBootstrap": {
             "type": "object",
             "required": [
-                "backup",
                 "name"
             ],
             "properties": {
                 "backup": {
-                    "description": "Backup is the name of a backup to use for the bootstrap",
+                    "description": "Backup is the name of a backup to use for the bootstrap\nIf empty, we use the latest available",
                     "type": "string"
                 },
+                "inherit_config": {
+                    "description": "Inherit configuration from the service",
+                    "type": "boolean"
+                },
                 "name": {
-                    "description": "Name is the name of the cluster to bootstrap from",
+                    "description": "Name is the name of the service to bootstrap from",
                     "type": "string"
                 }
             }
