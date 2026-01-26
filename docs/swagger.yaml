@@ -820,6 +820,33 @@ definitions:
       total:
         type: integer
     type: object
+  internal_stats.AppStatsV4Data:
+    properties:
+      ts:
+        type: integer
+      v: {}
+    type: object
+  internal_stats.AppStatsV4Element:
+    properties:
+      criticalAbove:
+        type: number
+      data:
+        items:
+          $ref: '#/definitions/internal_stats.AppStatsV4Data'
+        type: array
+      max:
+        type: number
+      title:
+        type: string
+      unit:
+        type: string
+      warnAbove:
+        type: number
+    type: object
+  internal_stats.AppStatsV4Response:
+    additionalProperties:
+      $ref: '#/definitions/internal_stats.AppStatsV4Element'
+    type: object
 host: api.runway.horse
 info:
   contact:
@@ -2463,6 +2490,100 @@ paths:
       summary: List volumes
       tags:
       - volumes
+  /v4/apps/{app}/stats:
+    get:
+      consumes:
+      - application/json
+      description: Returns the stats/metrics for a Runway app or service
+      parameters:
+      - default: 1h
+        description: time interval ('20m' means 20 minutes ago until now)
+        in: query
+        name: interval
+        type: string
+      - description: unix timestamp start time (`to` and `from` are used when `interval`
+          is not given)
+        format: '"timestamp"'
+        in: query
+        name: from
+        type: integer
+      - description: unix timestamp end time
+        format: '"timestamp"'
+        in: query
+        name: to
+        type: integer
+      - description: App Name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App or service metrics
+          schema:
+            $ref: '#/definitions/internal_stats.AppStatsV4Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Show metrics for a runway app or service
+      tags:
+      - stats
+  /v4/services/{service}/stats:
+    get:
+      consumes:
+      - application/json
+      description: Returns the stats/metrics for a Runway app or service
+      parameters:
+      - default: 1h
+        description: time interval ('20m' means 20 minutes ago until now)
+        in: query
+        name: interval
+        type: string
+      - description: unix timestamp start time (`to` and `from` are used when `interval`
+          is not given)
+        format: '"timestamp"'
+        in: query
+        name: from
+        type: integer
+      - description: unix timestamp end time
+        format: '"timestamp"'
+        in: query
+        name: to
+        type: integer
+      - description: Service Name
+        in: path
+        name: service
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App or service metrics
+          schema:
+            $ref: '#/definitions/internal_stats.AppStatsV4Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Show metrics for a runway app or service
+      tags:
+      - stats
 securityDefinitions:
   ApiKeyAuth:
     description: Bearer token for API authentication

@@ -2545,6 +2545,146 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v4/apps/{app}/stats": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the stats/metrics for a Runway app or service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stats"
+                ],
+                "summary": "Show metrics for a runway app or service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "1h",
+                        "description": "time interval ('20m' means 20 minutes ago until now)",
+                        "name": "interval",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "\"timestamp\"",
+                        "description": "unix timestamp start time (` + "`" + `to` + "`" + ` and ` + "`" + `from` + "`" + ` are used when ` + "`" + `interval` + "`" + ` is not given)",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "\"timestamp\"",
+                        "description": "unix timestamp end time",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "App Name",
+                        "name": "app",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "App or service metrics",
+                        "schema": {
+                            "$ref": "#/definitions/internal_stats.AppStatsV4Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v4/services/{service}/stats": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the stats/metrics for a Runway app or service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stats"
+                ],
+                "summary": "Show metrics for a runway app or service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "1h",
+                        "description": "time interval ('20m' means 20 minutes ago until now)",
+                        "name": "interval",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "\"timestamp\"",
+                        "description": "unix timestamp start time (` + "`" + `to` + "`" + ` and ` + "`" + `from` + "`" + ` are used when ` + "`" + `interval` + "`" + ` is not given)",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "format": "\"timestamp\"",
+                        "description": "unix timestamp end time",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Service Name",
+                        "name": "service",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "App or service metrics",
+                        "schema": {
+                            "$ref": "#/definitions/internal_stats.AppStatsV4Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -3741,6 +3881,47 @@ const docTemplate = `{
                 "total": {
                     "type": "integer"
                 }
+            }
+        },
+        "internal_stats.AppStatsV4Data": {
+            "type": "object",
+            "properties": {
+                "ts": {
+                    "type": "integer"
+                },
+                "v": {}
+            }
+        },
+        "internal_stats.AppStatsV4Element": {
+            "type": "object",
+            "properties": {
+                "criticalAbove": {
+                    "type": "number"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_stats.AppStatsV4Data"
+                    }
+                },
+                "max": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "warnAbove": {
+                    "type": "number"
+                }
+            }
+        },
+        "internal_stats.AppStatsV4Response": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/internal_stats.AppStatsV4Element"
             }
         }
     },
