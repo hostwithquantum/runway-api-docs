@@ -2747,6 +2747,12 @@ const docTemplate = `{
                 },
                 "region": {
                     "type": "string"
+                },
+                "withconfigfrom": {
+                    "type": "string"
+                },
+                "withsettingsfrom": {
+                    "type": "string"
                 }
             }
         },
@@ -3887,6 +3893,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "ts": {
+                    "description": "NOTE: in Milliseconds!",
                     "type": "integer"
                 },
                 "v": {}
@@ -3904,6 +3911,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/internal_stats.AppStatsV4Data"
                     }
                 },
+                "interval": {
+                    "$ref": "#/definitions/internal_stats.AppStatsV4Interval"
+                },
                 "max": {
                     "type": "number"
                 },
@@ -3915,6 +3925,21 @@ const docTemplate = `{
                 },
                 "warnAbove": {
                     "type": "number"
+                }
+            }
+        },
+        "internal_stats.AppStatsV4Interval": {
+            "type": "object",
+            "properties": {
+                "endTimestamp": {
+                    "type": "integer"
+                },
+                "startTimestamp": {
+                    "description": "NOTE: both in Milliseconds!",
+                    "type": "integer"
+                },
+                "tickMilliseconds": {
+                    "type": "integer"
                 }
             }
         },

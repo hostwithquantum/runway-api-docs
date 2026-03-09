@@ -37,6 +37,10 @@ definitions:
         type: string
       region:
         type: string
+      withconfigfrom:
+        type: string
+      withsettingsfrom:
+        type: string
     required:
     - id
     - plan
@@ -823,6 +827,7 @@ definitions:
   internal_stats.AppStatsV4Data:
     properties:
       ts:
+        description: 'NOTE: in Milliseconds!'
         type: integer
       v: {}
     type: object
@@ -834,6 +839,8 @@ definitions:
         items:
           $ref: '#/definitions/internal_stats.AppStatsV4Data'
         type: array
+      interval:
+        $ref: '#/definitions/internal_stats.AppStatsV4Interval'
       max:
         type: number
       title:
@@ -842,6 +849,16 @@ definitions:
         type: string
       warnAbove:
         type: number
+    type: object
+  internal_stats.AppStatsV4Interval:
+    properties:
+      endTimestamp:
+        type: integer
+      startTimestamp:
+        description: 'NOTE: both in Milliseconds!'
+        type: integer
+      tickMilliseconds:
+        type: integer
     type: object
   internal_stats.AppStatsV4Response:
     additionalProperties:
