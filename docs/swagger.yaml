@@ -8,6 +8,10 @@ definitions:
         items:
           $ref: '#/definitions/api.AppFeatures'
         type: array
+      hard_deletion_date:
+        description: optional, for soft deleted apps contains the date where the deletion
+          will happen
+        type: string
       id:
         type: string
       meta:
@@ -993,19 +997,27 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Permanently deletes an application on Runway and all associated
-        resources
+      description: Deletes an application on Runway and all associated resources
       parameters:
       - description: Application name
         in: path
         name: app
         required: true
         type: string
+      - default: false
+        description: Force immediate deletion (not restore-able)
+        in: query
+        name: force
+        type: boolean
       produces:
       - application/json
       responses:
-        "204":
+        "200":
           description: Successfully deleted Runway app
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Cannot delete a service
           schema:

@@ -256,7 +256,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Permanently deletes an application on Runway and all associated resources",
+                "description": "Deletes an application on Runway and all associated resources",
                 "consumes": [
                     "application/json"
                 ],
@@ -274,11 +274,24 @@ const docTemplate = `{
                         "name": "app",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Force immediate deletion (not restore-able)",
+                        "name": "force",
+                        "in": "query"
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Successfully deleted Runway app"
+                    "200": {
+                        "description": "Successfully deleted Runway app",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "400": {
                         "description": "Cannot delete a service",
@@ -2699,6 +2712,10 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/api.AppFeatures"
                     }
+                },
+                "hard_deletion_date": {
+                    "description": "optional, for soft deleted apps contains the date where the deletion will happen",
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
