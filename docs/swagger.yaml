@@ -232,6 +232,14 @@ definitions:
       min:
         type: integer
     type: object
+  api.BuildHookResponse:
+    properties:
+      release:
+        properties:
+          version:
+            type: integer
+        type: object
+    type: object
   api.ConfigUnset:
     properties:
       values:
@@ -828,6 +836,15 @@ definitions:
       total:
         type: integer
     type: object
+  internal_endpoints.deployImageRequest:
+    properties:
+      image:
+        type: string
+      sha:
+        type: string
+    required:
+    - image
+    type: object
   internal_stats.AppStatsV4Data:
     properties:
       ts:
@@ -1150,6 +1167,52 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update Runway app configuration
+      tags:
+      - apps
+  /v3/apps/{app}/deploy/image:
+    post:
+      consumes:
+      - application/json
+      description: Deploys a pre-built container image to an application on Runway
+        without going through the build pipeline
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Deploy image request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_endpoints.deployImageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deployed image
+          schema:
+            $ref: '#/definitions/api.BuildHookResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Deploy pre-built image to Runway app
       tags:
       - apps
   /v3/apps/{app}/domains:

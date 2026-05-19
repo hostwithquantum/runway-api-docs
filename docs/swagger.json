@@ -437,6 +437,76 @@
                 }
             }
         },
+        "/v3/apps/{app}/deploy/image": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Deploys a pre-built container image to an application on Runway without going through the build pipeline",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "Deploy pre-built image to Runway app",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Application name",
+                        "name": "app",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Deploy image request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_endpoints.deployImageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deployed image",
+                        "schema": {
+                            "$ref": "#/definitions/api.BuildHookResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "App not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/apps/{app}/domains": {
             "get": {
                 "security": [
@@ -3030,6 +3100,19 @@
                 }
             }
         },
+        "api.BuildHookResponse": {
+            "type": "object",
+            "properties": {
+                "release": {
+                    "type": "object",
+                    "properties": {
+                        "version": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
         "api.ConfigUnset": {
             "type": "object",
             "required": [
@@ -3897,6 +3980,20 @@
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "internal_endpoints.deployImageRequest": {
+            "type": "object",
+            "required": [
+                "image"
+            ],
+            "properties": {
+                "image": {
+                    "type": "string"
+                },
+                "sha": {
+                    "type": "string"
                 }
             }
         },
