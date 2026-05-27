@@ -500,6 +500,64 @@ definitions:
       status:
         type: string
     type: object
+  api.Registry:
+    properties:
+      hostname:
+        description: |-
+          URL is the full URL of the registry, including scheme and optional path
+          (e.g. "https://r.example.com/myproject"). Path components scope
+          credentials to a sub-path of the registry host.
+        type: string
+      managed:
+        type: boolean
+      organization:
+        type: string
+      username:
+        type: string
+      uuid:
+        type: string
+    type: object
+  api.RegistryCreateRequest:
+    properties:
+      hostname:
+        description: |-
+          URL is the full URL of the registry, including scheme and optional path
+          (e.g. "https://r.example.com/myproject"). Must begin with https://.
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - hostname
+    - password
+    - username
+    type: object
+  api.RegistryListResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.Registry'
+        type: array
+      total:
+        type: integer
+    type: object
+  api.RegistrySetRequest:
+    properties:
+      url:
+        description: |-
+          URL is the full registry URL, including scheme and optional path
+          (e.g. "https://r.example.com/myproject").
+        type: string
+    required:
+    - url
+    type: object
   api.RootDomain:
     properties:
       created:
@@ -1593,6 +1651,90 @@ paths:
       summary: Get Runway app pods
       tags:
       - apps
+  /v3/apps/{app}/registry:
+    delete:
+      description: |-
+        Resets the registry for an application to the user's managed registry.
+        If no managed registry exists the registry field is cleared.
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Managed registry now associated with the app
+          schema:
+            $ref: '#/definitions/api.Registry'
+        "204":
+          description: Registry cleared (no managed registry exists)
+        "400":
+          description: Not an app
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Reset app registry
+      tags:
+      - apps
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Associates a registry with an application for private image pulls.
+        The registry credentials are stored in the app config. The K8s pull
+        secret is created/updated on the next deployment.
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Registry URL
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.RegistrySetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registry associated with the app
+          schema:
+            $ref: '#/definitions/api.Registry'
+        "400":
+          description: Invalid request or not an app
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App or registry not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Set app registry
+      tags:
+      - apps
   /v3/apps/{app}/releases:
     get:
       consumes:
@@ -2193,6 +2335,114 @@ paths:
       summary: List available regions
       tags:
       - regions
+  /v3/registries:
+    delete:
+      description: Removes an external container registry. Managed registries cannot
+        be deleted.
+      parameters:
+      - description: Registry URL
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Successfully deleted
+        "400":
+          description: Missing url parameter
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "403":
+          description: Managed registry cannot be deleted
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Registry not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete registry
+      tags:
+      - registries
+    get:
+      description: Returns all container registries configured for the authenticated
+        user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of registries
+          schema:
+            $ref: '#/definitions/api.RegistryListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: List registries
+      tags:
+      - registries
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Adds a new external container registry, or updates credentials if one
+        with the same hostname already exists. Managed registries cannot be updated here.
+      parameters:
+      - description: Registry credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.RegistryCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated registry
+          schema:
+            $ref: '#/definitions/api.Registry'
+        "201":
+          description: Created registry
+          schema:
+            $ref: '#/definitions/api.Registry'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "403":
+          description: Cannot update managed registry
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add or update registry
+      tags:
+      - registries
   /v3/services:
     get:
       consumes:
