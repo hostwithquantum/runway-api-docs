@@ -157,6 +157,19 @@ definitions:
           type: string
         type: array
     type: object
+  api.AppStatusResponse:
+    properties:
+      build_status:
+        type: string
+      deployment_status:
+        type: string
+      integrations:
+        items:
+          type: string
+        type: array
+      status:
+        type: string
+    type: object
   api.AppsPodsResponse:
     properties:
       count:
@@ -1817,6 +1830,51 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update Runway app settings
+      tags:
+      - apps
+  /v3/apps/{app}/status:
+    get:
+      description: |-
+        Returns the current status of an application on Runway.
+        The `status` field is the combined user-facing value:
+        `build pending` | `building` | `not deployed` | `deploying` |
+        `restarting` | `crashing` | `running` | `crashed` | `stopped`
+        `deployment_status` reflects the stored app state
+        (`not_deployed` | `deploying` | `restarting` | `crashing` | `running` | `crashed` | `stopped`).
+        `build_status` is the active build state (`pending` | `running`), empty if no active build.
+        `integrations` lists active integrations derived from config (e.g. `["tailscale"]`), empty if none.
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current app status
+          schema:
+            $ref: '#/definitions/api.AppStatusResponse'
+        "400":
+          description: No status info for a service
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Runway app status
       tags:
       - apps
   /v3/auth/login:

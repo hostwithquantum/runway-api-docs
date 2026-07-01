@@ -1472,6 +1472,64 @@
                 }
             }
         },
+        "/v3/apps/{app}/status": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns the current status of an application on Runway.\nThe `status` field is the combined user-facing value:\n`build pending` | `building` | `not deployed` | `deploying` |\n`restarting` | `crashing` | `running` | `crashed` | `stopped`\n`deployment_status` reflects the stored app state\n(`not_deployed` | `deploying` | `restarting` | `crashing` | `running` | `crashed` | `stopped`).\n`build_status` is the active build state (`pending` | `running`), empty if no active build.\n`integrations` lists active integrations derived from config (e.g. `[\"tailscale\"]`), empty if none.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "Get Runway app status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Application name",
+                        "name": "app",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current app status",
+                        "schema": {
+                            "$ref": "#/definitions/api.AppStatusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "No status info for a service",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "App not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/auth/login": {
             "post": {
                 "description": "Authenticates a user and returns session information for Runway",
@@ -3267,6 +3325,26 @@
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "api.AppStatusResponse": {
+            "type": "object",
+            "properties": {
+                "build_status": {
+                    "type": "string"
+                },
+                "deployment_status": {
+                    "type": "string"
+                },
+                "integrations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },
