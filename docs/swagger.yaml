@@ -291,54 +291,6 @@ definitions:
       status:
         type: string
     type: object
-  api.ExecProbe:
-    properties:
-      command:
-        items:
-          type: string
-        type: array
-    type: object
-  api.HTTPGetProbe:
-    properties:
-      httpHeaders:
-        items:
-          $ref: '#/definitions/api.KVPair'
-        type: array
-      path:
-        type: string
-      port:
-        type: integer
-    type: object
-  api.Healthcheck:
-    properties:
-      exec:
-        $ref: '#/definitions/api.ExecProbe'
-      failureThreshold:
-        type: integer
-      httpGet:
-        $ref: '#/definitions/api.HTTPGetProbe'
-      initialDelaySeconds:
-        type: integer
-      periodSeconds:
-        type: integer
-      successThreshold:
-        type: integer
-      tcpSocket:
-        $ref: '#/definitions/api.TCPSocketProbe'
-      timeoutSeconds:
-        type: integer
-    type: object
-  api.Healthchecks:
-    additionalProperties:
-      $ref: '#/definitions/api.Healthcheck'
-    type: object
-  api.KVPair:
-    properties:
-      name:
-        type: string
-      value:
-        type: string
-    type: object
   api.Key:
     properties:
       created:
@@ -714,11 +666,6 @@ definitions:
       size:
         type: string
     type: object
-  api.TCPSocketProbe:
-    properties:
-      port:
-        type: integer
-    type: object
   api.User:
     properties:
       date_joined:
@@ -794,12 +741,6 @@ definitions:
       app:
         description: App is the app name. It cannot be updated at all right now.
         type: string
-      cpu:
-        additionalProperties: true
-        description: |-
-          CPU is used to set process CPU limits. It can be set in terms of whole CPUs
-          (ex 1) or in milli units to reflect the number of CPU shares (ex 500m).
-        type: object
       created:
         description: Created is the time that the configuration was created and cannot
           be updated.
@@ -808,37 +749,15 @@ definitions:
         description: Ephemeral determines if an app has persistent storage attached
           to it
         type: boolean
-      healthcheck:
-        additionalProperties:
-          $ref: '#/definitions/api.Healthchecks'
-        description: Healthcheck is map of healthchecks for each process that the
-          application uses.
-        type: object
-      memory:
-        additionalProperties: true
-        description: |-
-          Memory is used to set process memory limits. The key is the process name
-          and the value is a number followed by a memory unit (G, M, K, or B). Ex: 200G
-        type: object
       owner:
         description: Owner is the app owner. It cannot be updated with config.Set().
           See app.Transfer().
         type: string
       registry:
-        additionalProperties: true
+        additionalProperties: {}
         description: |-
           Registry is a key-value pair to provide authentication for docker registries.
           The key is the username and the value is the password.
-        type: object
-      tags:
-        additionalProperties: true
-        description: Tags restrict applications to run on k8s nodes with that label.
-        type: object
-      termination_grace_period:
-        additionalProperties: true
-        description: |-
-          Timeout is used to set termination grace period. The key is the process name
-          and the value is a number in seconds, e.g. 30
         type: object
       updated:
         description: Updated is the last time the configuration was changed and cannot
@@ -850,7 +769,7 @@ definitions:
           It changes every time the configuration is changed and cannot be updated.
         type: string
       values:
-        additionalProperties: true
+        additionalProperties: {}
         description: Values are exposed as environment variables to the app.
         type: object
     type: object
