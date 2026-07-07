@@ -1193,14 +1193,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Managed registry now associated with the app",
-                        "schema": {
-                            "$ref": "#/definitions/api.Registry"
-                        }
-                    },
                     "204": {
-                        "description": "Registry cleared (no managed registry exists)"
+                        "description": "Registry reset (to the managed registry, or cleared if none exists)"
                     },
                     "400": {
                         "description": "Not an app",
@@ -2216,7 +2210,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Returns all container registries configured for the authenticated user",
+                "description": "Returns all container registries configured for the authenticated user (including the Runway-managed one)",
                 "produces": [
                     "application/json"
                 ],
