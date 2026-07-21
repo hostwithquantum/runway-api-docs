@@ -1,5 +1,70 @@
 basePath: /
 definitions:
+  api.APIKey:
+    properties:
+      created:
+        type: string
+      expires:
+        type: string
+      key_id:
+        type: string
+      last_used:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+  api.APIKeyCreateRequest:
+    properties:
+      expiration:
+        enum:
+        - 1h
+        - 1d
+        - 1w
+        - 1mo
+        - 3mo
+        - 6mo
+        - 1y
+        type: string
+      name:
+        type: string
+    required:
+    - expiration
+    - name
+    type: object
+  api.APIKeyCreateResponse:
+    properties:
+      created:
+        type: string
+      expires:
+        type: string
+      key_id:
+        type: string
+      last_used:
+        type: string
+      name:
+        type: string
+      secret:
+        type: string
+      status:
+        type: string
+    type: object
+  api.APIKeyListResponse:
+    properties:
+      count:
+        type: integer
+      next:
+        type: string
+      previous:
+        type: string
+      results:
+        items:
+          $ref: '#/definitions/api.APIKey'
+        type: array
+      total:
+        type: integer
+    type: object
   api.App:
     properties:
       created:
@@ -889,6 +954,146 @@ info:
   title: Runway Controller API
   version: "1.0"
 paths:
+  /v3/api-keys:
+    get:
+      description: Returns all API keys issued on Runway for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of API keys
+          schema:
+            $ref: '#/definitions/api.APIKeyListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      summary: List API keys
+      tags:
+      - apikeys
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Issues a new API key on Runway for the authenticated user.
+        The plaintext secret is returned once and cannot be retrieved again.
+      parameters:
+      - description: API key creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.APIKeyCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully issued API key
+          schema:
+            $ref: '#/definitions/api.APIKeyCreateResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      summary: Issue API key
+      tags:
+      - apikeys
+  /v3/api-keys/{keyID}:
+    delete:
+      description: |-
+        Revokes an API key on Runway. The record is retained for audit
+        but the key can no longer be used to authenticate. Revocation is
+        irreversible.
+      parameters:
+      - description: API key ID
+        in: path
+        name: keyID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully revoked API key
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: API key not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      summary: Revoke API key
+      tags:
+      - apikeys
+    get:
+      description: |-
+        Returns metadata for a single API key issued on Runway for the
+        authenticated user. The plaintext secret is never returned.
+      parameters:
+      - description: API key ID
+        in: path
+        name: keyID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: API key
+          schema:
+            $ref: '#/definitions/api.APIKey'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: API key not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      summary: Get API key
+      tags:
+      - apikeys
   /v3/apps:
     get:
       consumes:
@@ -922,6 +1127,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List Runway apps
       tags:
@@ -961,6 +1167,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Restore Runway app
       tags:
@@ -996,6 +1203,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Create a new Runway app
       tags:
@@ -1042,6 +1250,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete Runway app
       tags:
@@ -1076,6 +1285,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app details
       tags:
@@ -1111,6 +1321,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app configuration
       tags:
@@ -1155,6 +1366,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Update Runway app configuration
       tags:
@@ -1201,6 +1413,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Deploy pre-built image to Runway app
       tags:
@@ -1236,6 +1449,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List app domains
       tags:
@@ -1280,6 +1494,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Create app domain
       tags:
@@ -1330,6 +1545,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Remove app domain
       tags:
@@ -1375,6 +1591,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Execute command in Runway app
       tags:
@@ -1418,6 +1635,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Revoke app permissions
       tags:
@@ -1452,6 +1670,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get app permissions
       tags:
@@ -1494,6 +1713,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Grant app permissions
       tags:
@@ -1540,6 +1760,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Change Runway app plan
       tags:
@@ -1579,6 +1800,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app pods
       tags:
@@ -1613,6 +1835,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Reset app registry
       tags:
@@ -1660,6 +1883,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Set app registry
       tags:
@@ -1704,6 +1928,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app releases (of the last 2 weeks)
       tags:
@@ -1742,6 +1967,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Restart Runway app
       tags:
@@ -1781,6 +2007,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app settings
       tags:
@@ -1825,6 +2052,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Update Runway app settings
       tags:
@@ -1870,6 +2098,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway app status
       tags:
@@ -2009,6 +2238,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get current user information
       tags:
@@ -2035,6 +2265,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List domains
       tags:
@@ -2070,6 +2301,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Create domain
       tags:
@@ -2103,6 +2335,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete domain
       tags:
@@ -2142,6 +2375,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Verify domain ownership
       tags:
@@ -2168,6 +2402,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List SSH keys
       tags:
@@ -2203,6 +2438,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Add SSH key
       tags:
@@ -2236,6 +2472,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete SSH key
       tags:
@@ -2281,6 +2518,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List service policies
       tags:
@@ -2345,6 +2583,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete registry
       tags:
@@ -2368,6 +2607,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List registries
       tags:
@@ -2413,6 +2653,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Add or update registry
       tags:
@@ -2441,6 +2682,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List Runway services
       tags:
@@ -2480,6 +2722,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Create Runway service
       tags:
@@ -2514,6 +2757,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete Runway service
       tags:
@@ -2549,6 +2793,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Get Runway service details
       tags:
@@ -2593,6 +2838,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Update Runway service
       tags:
@@ -2628,6 +2874,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List service backups
       tags:
@@ -2662,6 +2909,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Create immediate backup
       tags:
@@ -2697,6 +2945,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Delete service backup
       tags:
@@ -2739,6 +2988,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Download service backup
       tags:
@@ -2776,6 +3026,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Restart a service
       tags:
@@ -2802,6 +3053,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: List volumes
       tags:
@@ -2849,6 +3101,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Show metrics for a runway app or service
       tags:
@@ -2896,12 +3149,18 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
       security:
+      - BearerAuth: []
       - ApiKeyAuth: []
       summary: Show metrics for a runway app or service
       tags:
       - stats
 securityDefinitions:
   ApiKeyAuth:
+    description: Runway API key for authentication
+    in: header
+    name: X-Runway-Api-Key
+    type: apiKey
+  BearerAuth:
     description: Bearer token for API authentication
     in: header
     name: Authorization

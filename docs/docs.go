@@ -24,9 +24,221 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v3/api-keys": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns all API keys issued on Runway for the authenticated user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apikeys"
+                ],
+                "summary": "List API keys",
+                "responses": {
+                    "200": {
+                        "description": "List of API keys",
+                        "schema": {
+                            "$ref": "#/definitions/api.APIKeyListResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Issues a new API key on Runway for the authenticated user.\nThe plaintext secret is returned once and cannot be retrieved again.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apikeys"
+                ],
+                "summary": "Issue API key",
+                "parameters": [
+                    {
+                        "description": "API key creation request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.APIKeyCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully issued API key",
+                        "schema": {
+                            "$ref": "#/definitions/api.APIKeyCreateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v3/api-keys/{keyID}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns metadata for a single API key issued on Runway for the\nauthenticated user. The plaintext secret is never returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apikeys"
+                ],
+                "summary": "Get API key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "API key ID",
+                        "name": "keyID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "API key",
+                        "schema": {
+                            "$ref": "#/definitions/api.APIKey"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "API key not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Revokes an API key on Runway. The record is retained for audit\nbut the key can no longer be used to authenticate. Revocation is\nirreversible.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apikeys"
+                ],
+                "summary": "Revoke API key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "API key ID",
+                        "name": "keyID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully revoked API key",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "API key not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/apps": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -82,6 +294,9 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -136,6 +351,9 @@ const docTemplate = `{
             },
             "patch": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -200,6 +418,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -252,6 +473,9 @@ const docTemplate = `{
             },
             "delete": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -324,6 +548,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -376,6 +603,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -447,6 +677,9 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -517,6 +750,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -569,6 +805,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -639,6 +878,9 @@ const docTemplate = `{
         "/v3/apps/{app}/domains/{domain}": {
             "delete": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -717,6 +959,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -787,6 +1032,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -839,6 +1087,9 @@ const docTemplate = `{
             },
             "put": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -904,6 +1155,9 @@ const docTemplate = `{
             },
             "delete": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -971,6 +1225,9 @@ const docTemplate = `{
         "/v3/apps/{app}/plan": {
             "put": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1043,6 +1300,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1103,6 +1363,9 @@ const docTemplate = `{
         "/v3/apps/{app}/registry": {
             "put": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1172,6 +1435,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1220,6 +1486,9 @@ const docTemplate = `{
         "/v3/apps/{app}/releases": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1289,6 +1558,9 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1346,6 +1618,9 @@ const docTemplate = `{
         "/v3/apps/{app}/settings": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1405,6 +1680,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1475,6 +1753,9 @@ const docTemplate = `{
         "/v3/apps/{app}/status": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1706,6 +1987,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1746,6 +2030,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1783,6 +2070,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1841,6 +2131,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1892,6 +2185,9 @@ const docTemplate = `{
         "/v3/domains/{domain}/verify": {
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -1954,6 +2250,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -1991,6 +2290,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2048,6 +2350,9 @@ const docTemplate = `{
         "/v3/keys/{keyid}": {
             "delete": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2130,6 +2435,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2207,6 +2515,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2241,6 +2552,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2309,6 +2623,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2370,6 +2687,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2410,6 +2730,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2474,6 +2797,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2526,6 +2852,9 @@ const docTemplate = `{
             },
             "put": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2595,6 +2924,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2646,6 +2978,9 @@ const docTemplate = `{
         "/v3/services/{app}/backups": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2699,6 +3034,9 @@ const docTemplate = `{
             },
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2754,6 +3092,9 @@ const docTemplate = `{
         "/v3/services/{app}/backups/{name}": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2818,6 +3159,9 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2872,6 +3216,9 @@ const docTemplate = `{
         "/v3/services/{app}/restart": {
             "post": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -2931,6 +3278,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -2970,6 +3320,9 @@ const docTemplate = `{
         "/v4/apps/{app}/stats": {
             "get": {
                 "security": [
+                    {
+                        "BearerAuth": []
+                    },
                     {
                         "ApiKeyAuth": []
                     }
@@ -3041,6 +3394,9 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
+                        "BearerAuth": []
+                    },
+                    {
                         "ApiKeyAuth": []
                     }
                 ],
@@ -3109,6 +3465,102 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.APIKey": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string"
+                },
+                "key_id": {
+                    "type": "string"
+                },
+                "last_used": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.APIKeyCreateRequest": {
+            "type": "object",
+            "required": [
+                "expiration",
+                "name"
+            ],
+            "properties": {
+                "expiration": {
+                    "type": "string",
+                    "enum": [
+                        "1h",
+                        "1d",
+                        "1w",
+                        "1mo",
+                        "3mo",
+                        "6mo",
+                        "1y"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.APIKeyCreateResponse": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string"
+                },
+                "key_id": {
+                    "type": "string"
+                },
+                "last_used": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.APIKeyListResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "previous": {
+                    "type": "string"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.APIKey"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.App": {
             "type": "object",
             "properties": {
@@ -4391,6 +4843,12 @@ const docTemplate = `{
     },
     "securityDefinitions": {
         "ApiKeyAuth": {
+            "description": "Runway API key for authentication",
+            "type": "apiKey",
+            "name": "X-Runway-Api-Key",
+            "in": "header"
+        },
+        "BearerAuth": {
             "description": "Bearer token for API authentication",
             "type": "apiKey",
             "name": "Authorization",
