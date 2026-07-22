@@ -3592,6 +3592,10 @@ const docTemplate = `{
                 "region": {
                     "type": "string"
                 },
+                "source": {
+                    "description": "Source is how the app was last deployed: \"buildpack\", \"buildkit\",\n\"oci_image\" or \"template\". Empty until the first deployment.",
+                    "type": "string"
+                },
                 "type": {
                     "type": "string"
                 },
