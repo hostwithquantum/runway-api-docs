@@ -1566,7 +1566,7 @@ paths:
         name: app
         required: true
         type: string
-      - description: Command to execute
+      - description: Command to execute; empty means an interactive shell
         in: query
         name: command
         type: string

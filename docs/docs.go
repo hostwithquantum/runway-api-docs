@@ -986,7 +986,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Command to execute",
+                        "description": "Command to execute; empty means an interactive shell",
                         "name": "command",
                         "in": "query"
                     },
