@@ -775,6 +775,7 @@ definitions:
   api.VolumeEntity:
     properties:
       app:
+        description: the app/service this belongs to
         type: string
       attachable:
         type: boolean
@@ -782,14 +783,26 @@ definitions:
         type: boolean
       detachable:
         type: boolean
+      is_replica:
+        type: boolean
       mountpoint:
+        description: the mountpoint
         type: string
       name:
         type: string
+      replicas:
+        description: volumes that replicate this
+        items:
+          type: string
+        type: array
       resizable:
         type: boolean
       size:
-        type: string
+        description: storage size, MiB
+        type: integer
+      size_extra:
+        description: extra storage, MiB
+        type: integer
     type: object
   api.VolumesResponse:
     properties:
@@ -3123,6 +3136,43 @@ paths:
       - BearerAuth: []
       - ApiKeyAuth: []
       summary: List volumes
+      tags:
+      - volumes
+  /v3/volumes/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Returns details of a specific storage volume on Runway, including
+        its replica set.
+      parameters:
+      - description: Volume name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: volume
+          schema:
+            $ref: '#/definitions/api.VolumeEntity'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: Volume not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Get volume
       tags:
       - volumes
   /v4/apps/{app}/stats:
