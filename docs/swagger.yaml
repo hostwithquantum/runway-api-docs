@@ -2108,6 +2108,37 @@ paths:
       summary: Get Runway app status
       tags:
       - apps
+  /v3/apps/{app}/volumes:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all storage volumes for the app.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of volumes
+          schema:
+            $ref: '#/definitions/api.VolumesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: No volumes found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: List app volumes
+      tags:
+      - apps
+      - volumes
   /v3/auth/login:
     post:
       consumes:
@@ -3036,6 +3067,37 @@ paths:
       summary: Restart a service
       tags:
       - apps
+  /v3/services/{app}/volumes:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of all storage volumes for the service.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of volumes
+          schema:
+            $ref: '#/definitions/api.VolumesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: No volumes found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: List service volumes
+      tags:
+      - services
+      - volumes
   /v3/volumes:
     get:
       consumes:
@@ -3166,7 +3228,7 @@ securityDefinitions:
     name: X-Runway-Api-Key
     type: apiKey
   BearerAuth:
-    description: Bearer token for API authentication
+    description: Bearer token/Session for authentication
     in: header
     name: Authorization
     type: apiKey

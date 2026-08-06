@@ -1811,6 +1811,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/v3/apps/{app}/volumes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns a list of all storage volumes for the app.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps",
+                    "volumes"
+                ],
+                "summary": "List app volumes",
+                "responses": {
+                    "200": {
+                        "description": "List of volumes",
+                        "schema": {
+                            "$ref": "#/definitions/api.VolumesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No volumes found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/auth/login": {
             "post": {
                 "description": "Authenticates a user and returns session information for Runway",
@@ -3261,6 +3311,56 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Service not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v3/services/{app}/volumes": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Returns a list of all storage volumes for the service.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services",
+                    "volumes"
+                ],
+                "summary": "List service volumes",
+                "responses": {
+                    "200": {
+                        "description": "List of volumes",
+                        "schema": {
+                            "$ref": "#/definitions/api.VolumesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No volumes found",
                         "schema": {
                             "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
                         }
@@ -4853,7 +4953,7 @@ const docTemplate = `{
             "in": "header"
         },
         "BearerAuth": {
-            "description": "Bearer token for API authentication",
+            "description": "Bearer token/Session for authentication",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"
