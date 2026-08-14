@@ -1347,7 +1347,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Updates configuration variables for an application on Runway
+      description: Updates configuration variables for an application on Runway. This
+        method is idempotent.
       parameters:
       - description: Application name
         in: path
@@ -1364,7 +1365,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: Updated Runway app configuration
+          description: No update was necessary
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway_sdk_api.Config'
+        "201":
+          description: Runway app configuration was updated
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway_sdk_api.Config'
         "400":
@@ -1389,6 +1394,7 @@ paths:
       summary: Update Runway app configuration
       tags:
       - apps
+      - services
   /v3/apps/{app}/deploy/image:
     post:
       consumes:

@@ -610,7 +610,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Updates configuration variables for an application on Runway",
+                "description": "Updates configuration variables for an application on Runway. This method is idempotent.",
                 "consumes": [
                     "application/json"
                 ],
@@ -618,7 +618,8 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "apps"
+                    "apps",
+                    "services"
                 ],
                 "summary": "Update Runway app configuration",
                 "parameters": [
@@ -641,7 +642,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Updated Runway app configuration",
+                        "description": "No update was necessary",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway_sdk_api.Config"
+                        }
+                    },
+                    "201": {
+                        "description": "Runway app configuration was updated",
                         "schema": {
                             "$ref": "#/definitions/github_com_hostwithquantum_runway_sdk_api.Config"
                         }
