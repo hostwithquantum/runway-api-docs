@@ -879,6 +879,8 @@ definitions:
         type: string
       created:
         type: string
+      deployed:
+        type: boolean
       exception:
         type: string
       failed:

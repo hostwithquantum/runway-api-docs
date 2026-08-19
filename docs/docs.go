@@ -4906,6 +4906,9 @@ const docTemplate = `{
                 "created": {
                     "type": "string"
                 },
+                "deployed": {
+                    "type": "boolean"
+                },
                 "exception": {
                     "type": "string"
                 },
