@@ -119,6 +119,18 @@ definitions:
     - id
     - plan
     type: object
+  api.AppDeployTemplateRequest:
+    properties:
+      inputs:
+        additionalProperties: {}
+        description: Inputs are the user's answers to the template's declared inputs.
+        type: object
+      template:
+        description: Template is the raw template document (YAML or JSON).
+        type: string
+    required:
+    - template
+    type: object
   api.AppFeatures:
     properties:
       name:
@@ -372,6 +384,22 @@ definitions:
           $ref: '#/definitions/api.Domain'
         type: array
       status:
+        type: string
+    type: object
+  api.ExecErrorResponse:
+    properties:
+      errors:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+      process_types:
+        items:
+          type: string
+        type: array
+      status:
+        description: '"error"'
         type: string
     type: object
   api.Key:
@@ -1444,6 +1472,53 @@ paths:
       summary: Deploy pre-built image to Runway app
       tags:
       - apps
+  /v3/apps/{app}/deploy/template:
+    post:
+      consumes:
+      - application/json
+      description: Validates a Runway template plus its input values, renders it,
+        and submits the resulting StatefulSet to the app's region
+      parameters:
+      - description: Application name
+        in: path
+        name: app
+        required: true
+        type: string
+      - description: Deploy template request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AppDeployTemplateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Template submitted
+          schema:
+            $ref: '#/definitions/api.BuildHookResponse'
+        "400":
+          description: Invalid template or input values
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "404":
+          description: App not found
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      summary: Deploy a template to a Runway app
+      tags:
+      - apps
   /v3/apps/{app}/domains:
     get:
       consumes:
@@ -1591,7 +1666,8 @@ paths:
         in: query
         name: command
         type: string
-      - description: Process type (cmd or worker)
+      - description: 'Process type: cmd or worker; for template apps, cmd or a worker
+          name from the template'
         in: query
         name: process
         type: string
@@ -1601,9 +1677,10 @@ paths:
         "101":
           description: WebSocket connection for command execution
         "400":
-          description: Invalid request or app not running
+          description: Invalid request or app not running; lists the app's process
+            types when the requested one does not exist
           schema:
-            $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
+            $ref: '#/definitions/api.ExecErrorResponse'
         "401":
           description: Unauthorized
           schema:

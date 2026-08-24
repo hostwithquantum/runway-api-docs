@@ -753,6 +753,79 @@ const docTemplate = `{
                 }
             }
         },
+        "/v3/apps/{app}/deploy/template": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Validates a Runway template plus its input values, renders it, and submits the resulting StatefulSet to the app's region",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "apps"
+                ],
+                "summary": "Deploy a template to a Runway app",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Application name",
+                        "name": "app",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Deploy template request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.AppDeployTemplateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template submitted",
+                        "schema": {
+                            "$ref": "#/definitions/api.BuildHookResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid template or input values",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "App not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v3/apps/{app}/domains": {
             "get": {
                 "security": [
@@ -999,7 +1072,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Process type (cmd or worker)",
+                        "description": "Process type: cmd or worker; for template apps, cmd or a worker name from the template",
                         "name": "process",
                         "in": "query"
                     }
@@ -1009,9 +1082,9 @@ const docTemplate = `{
                         "description": "WebSocket connection for command execution"
                     },
                     "400": {
-                        "description": "Invalid request or app not running",
+                        "description": "Invalid request or app not running; lists the app's process types when the requested one does not exist",
                         "schema": {
-                            "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
+                            "$ref": "#/definitions/api.ExecErrorResponse"
                         }
                     },
                     "401": {
@@ -3802,6 +3875,23 @@ const docTemplate = `{
                 }
             }
         },
+        "api.AppDeployTemplateRequest": {
+            "type": "object",
+            "required": [
+                "template"
+            ],
+            "properties": {
+                "inputs": {
+                    "description": "Inputs are the user's answers to the template's declared inputs.",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "template": {
+                    "description": "Template is the raw template document (YAML or JSON).",
+                    "type": "string"
+                }
+            }
+        },
         "api.AppFeatures": {
             "type": "object",
             "properties": {
@@ -4172,6 +4262,30 @@ const docTemplate = `{
                     }
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ExecErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "process_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "description": "\"error\"",
                     "type": "string"
                 }
             }
