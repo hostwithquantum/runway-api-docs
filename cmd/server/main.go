@@ -4,13 +4,13 @@
 package main
 
 import (
-	"fmt"
+	"embed"
 	log "log/slog"
 	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/hostwithquantum/runway-api-docs/docs"
-	"github.com/hostwithquantum/runway-api-docs/static"
 
 	"github.com/gorilla/mux"
 )
@@ -19,7 +19,18 @@ var (
 	listen  string
 	version = "dev"
 	base    = ""
+
+	//go:embed templates
+	templates embed.FS
+
+	//go:embed static
+	static embed.FS
 )
+
+// page data
+type PageData struct {
+	BaseURL string
+}
 
 func init() {
 	// set port
@@ -36,6 +47,11 @@ func init() {
 }
 
 func main() {
+	tmpl, err := template.ParseFS(templates, "templates/*.gotmpl")
+	if err != nil {
+		log.Error("loading templates", log.Any("err", err))
+	}
+
 	r := mux.NewRouter()
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -62,38 +78,17 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(docs.SwaggerJSON)
 	})
+	s.PathPrefix("/static/").Handler(http.StripPrefix(base, http.FileServerFS(static)))
 	s.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "https://ui.runway.horse/favicon.ico", http.StatusPermanentRedirect)
 	})
-	s.HandleFunc("/rapidoc.js", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/javascript")
-		w.Write(static.RapidocJS)
-	})
 	s.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if err := tmpl.ExecuteTemplate(w, "page.gotmpl", PageData{BaseURL: base}); err != nil {
+			http.Error(w, "could not load page", http.StatusInternalServerError)
+			log.Error("failed to load page", log.Any("err", err))
+			return
+		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprintf(w, `<!DOCTYPE html>
-<html>
-<head>
-	<title>Runway API Documentation</title>
-	<script defer data-api="https://www.runway.horse/api/event" data-domain="runway.horse" src="https://www.runway.horse/js/script.js"></script>
-</head>
-<body>
-	<rapi-doc
-		allow-authentication ='false'
-		allow-server-selection='false'
-		server-url='https://api.runway.horse'
-		schema-style='table'
-		show-header='false'
-		spec-url='%s/docs/swagger.json'
-		theme='light'>
-		<img
-			slot="nav-logo"
-			src="https://www.runway.horse/img/runway-logo-silverphoenix.svg"
-		/>
-	</rapi-doc>
-	<script src="%s/rapidoc.js"></script>
-</body>
-</html>`, base, base)
 	})
 
 	log.Info("Running on " + listen)

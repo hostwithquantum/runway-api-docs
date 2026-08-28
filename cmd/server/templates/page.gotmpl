@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+<head>
+	<title>Runway API Documentation</title>
+	<script defer data-api="https://www.runway.horse/api/event" data-domain="runway.horse" src="https://www.runway.horse/js/script.js"></script>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1" />
+      <style>
+        @font-face {
+          font-family: "roobert";
+          src: url("https://www.runway.horse/Roobert-Regular.woff") format("woff");
+          font-weight: normal;
+        }
+        @font-face {
+          font-family: "roobert";
+          src: url("https://www.runway.horse/Roobert-RegularItalic.woff") format("woff");
+          font-style: italic;
+          font-weight: normal;
+        }
+        @font-face {
+          font-family: "roobert";
+          src: url("https://www.runway.horse/Roobert-Bold.woff") format("woff");
+          font-weight: bold;
+        }
+        @font-face {
+          font-family: "roobert";
+          src: url("https://www.runway.horse/Roobert-BoldItalic.woff") format("woff");
+          font-style: italic;
+          font-weight: bold;
+        }
+        :root {
+          --scalar-font: 'roobert', ui-sans-serif, system-ui, sans-serif;
+          --scalar-font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        /* silverphoenix */
+        .light-mode {
+          --scalar-background-1: #F9F9FE;
+          --scalar-background-2: #F1F1FC;
+          --scalar-background-3: #EBEBFA;
+          --scalar-border-color: #D1D1E5;
+          --scalar-color-1: #020C7E;
+          --scalar-color-2: #0618BA;
+          --scalar-color-3: #B2B2CC;
+          --scalar-color-accent: #0B24FB;
+          --scalar-background-accent: #0B24FB1f;
+        }
+        /* blueberry */
+        .dark-mode {
+          --scalar-background-1: #020C7E;
+          --scalar-background-2: #0618BA;
+          --scalar-background-3: #0B24FB;
+          --scalar-border-color: #3066FF;
+          --scalar-color-1: #F9F9FE;
+          --scalar-color-2: #EBEBFA;
+          --scalar-color-3: #7AA5FF;
+          --scalar-color-accent: #7AA5FF;
+          --scalar-background-accent: #7AA5FF1f;
+        }
+        :root {
+          --footer-height: 56px;
+        }
+        /* scalar hardcodes 100dvh, shrink it so the footer fits below */
+        .references-layout {
+          --full-height: calc(100dvh - var(--footer-height)) !important;
+          height: var(--full-height) !important;
+          min-height: 0 !important;
+        }
+        footer {
+          position: fixed;
+          inset: auto 0 0 0;
+          height: var(--footer-height);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--scalar-background-1);
+          border-top: 1px solid var(--scalar-border-color);
+        }
+        footer img {
+          height: 1.5rem;
+        }
+        .light-mode .logo-dark, .dark-mode .logo-light { display: none; }
+      </style>
+  </head>
+
+  <body>
+    <div id="runway-api-docs"></div>
+    <footer>
+      <a href="https://www.runway.horse/">
+        <img class="logo-dark" src="https://www.runway.horse/img/runway-logo-silverphoenix.svg" alt="Runway" />
+        <img class="logo-light" src="https://www.runway.horse/img/runway-logo-black.svg" alt="Runway" />
+      </a>
+    </footer>
+
+    <script src="{{ .BaseURL }}/static/scalar.v1.67.0.js"></script>
+    <script>
+      Scalar.createApiReference('#runway-api-docs', {
+        url: '{{ .BaseURL }}/docs/swagger.json',
+        showDeveloperTools: 'never',
+        telemetry: false,
+        withDefaultFonts: false,
+        hideClientButton: true,
+        agent: {
+          disabled: true,
+        },
+        mcp: {
+          disabled: true,
+        },
+      })
+    </script>
+  </body>
+</html>

@@ -1,3 +1,3 @@
-.PHONY: rapidoc
-rapidoc:
-	cd js/ && npm ci && npm run build
+.PHONY: run-dev
+run-dev:
+	go run ./cmd/server/main.go
