@@ -7,6 +7,8 @@ on:
 
 jobs:
   runway:
+    permissions:
+      contents: read
     environment:
       name: production
       url: https://runway-api-docs.pqapp.dev/
@@ -17,6 +19,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: hostwithquantum/setup-runway@v0.5.1
         with:
           application: ${{ env.APP_NAME }}
