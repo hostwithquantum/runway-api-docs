@@ -92,6 +92,12 @@ definitions:
           Source is how the app was last deployed: "buildpack", "buildkit",
           "oci_image" or "template". Empty until the first deployment.
         type: string
+      template:
+        allOf:
+        - $ref: '#/definitions/api.AppTemplate'
+        description: |-
+          Template is set for apps deployed from a template: the template
+          the running release was rendered from.
       type:
         type: string
       updated:
@@ -255,6 +261,13 @@ definitions:
           type: string
         type: array
       status:
+        type: string
+    type: object
+  api.AppTemplate:
+    properties:
+      name:
+        type: string
+      version:
         type: string
     type: object
   api.AppsPodsResponse:

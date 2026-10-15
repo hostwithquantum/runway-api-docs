@@ -3834,6 +3834,14 @@ const docTemplate = `{
                     "description": "Source is how the app was last deployed: \"buildpack\", \"buildkit\",\n\"oci_image\" or \"template\". Empty until the first deployment.",
                     "type": "string"
                 },
+                "template": {
+                    "description": "Template is set for apps deployed from a template: the template\nthe running release was rendered from.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.AppTemplate"
+                        }
+                    ]
+                },
                 "type": {
                     "type": "string"
                 },
@@ -4059,6 +4067,17 @@ const docTemplate = `{
                     }
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.AppTemplate": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }
