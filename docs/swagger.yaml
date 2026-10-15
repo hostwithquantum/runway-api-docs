@@ -126,7 +126,12 @@ definitions:
         description: Inputs are the user's answers to the template's declared inputs.
         type: object
       template:
-        description: Template is the raw template document (YAML or JSON).
+        description: Template is the template's name in the catalog, e.g. "valkey".
+        type: string
+      version:
+        description: |-
+          Version is the template version, e.g. "1.0.0". Empty deploys the
+          latest version.
         type: string
     required:
     - template
@@ -1476,8 +1481,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Validates a Runway template plus its input values, renders it,
-        and submits the resulting StatefulSet to the app's region
+      description: Loads a template from the catalog (latest version unless one is
+        given), validates it and its input values, renders it, and submits the resulting
+        StatefulSet to the app's region
       parameters:
       - description: Application name
         in: path
@@ -1506,7 +1512,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
         "404":
-          description: App not found
+          description: App, template or version not found
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
         "500":
@@ -1970,7 +1976,7 @@ paths:
           schema:
             $ref: '#/definitions/api.Registry'
         "400":
-          description: Invalid request or not an app
+          description: Invalid request, not an app, or a template app
           schema:
             $ref: '#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse'
         "401":

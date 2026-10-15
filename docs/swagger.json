@@ -757,7 +757,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Validates a Runway template plus its input values, renders it, and submits the resulting StatefulSet to the app's region",
+                "description": "Loads a template from the catalog (latest version unless one is given), validates it and its input values, renders it, and submits the resulting StatefulSet to the app's region",
                 "consumes": [
                     "application/json"
                 ],
@@ -806,7 +806,7 @@
                         }
                     },
                     "404": {
-                        "description": "App not found",
+                        "description": "App, template or version not found",
                         "schema": {
                             "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
                         }
@@ -1481,7 +1481,7 @@
                         }
                     },
                     "400": {
-                        "description": "Invalid request or not an app",
+                        "description": "Invalid request, not an app, or a template app",
                         "schema": {
                             "$ref": "#/definitions/github_com_hostwithquantum_runway-controller-next_internal_app.StatusErrResponse"
                         }
@@ -3881,7 +3881,11 @@
                     "additionalProperties": {}
                 },
                 "template": {
-                    "description": "Template is the raw template document (YAML or JSON).",
+                    "description": "Template is the template's name in the catalog, e.g. \"valkey\".",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "Version is the template version, e.g. \"1.0.0\". Empty deploys the\nlatest version.",
                     "type": "string"
                 }
             }
