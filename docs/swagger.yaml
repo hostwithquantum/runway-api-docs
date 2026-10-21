@@ -267,7 +267,21 @@ definitions:
     properties:
       name:
         type: string
+      outputs:
+        additionalProperties:
+          $ref: '#/definitions/api.AppTemplateOutput'
+        description: |-
+          Outputs are the template's connection details, keyed by output
+          name ("DSN", "URL").
+        type: object
       version:
+        type: string
+    type: object
+  api.AppTemplateOutput:
+    properties:
+      masked:
+        type: string
+      value:
         type: string
     type: object
   api.AppsPodsResponse:

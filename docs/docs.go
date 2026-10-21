@@ -4077,7 +4077,25 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "outputs": {
+                    "description": "Outputs are the template's connection details, keyed by output\nname (\"DSN\", \"URL\").",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/api.AppTemplateOutput"
+                    }
+                },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.AppTemplateOutput": {
+            "type": "object",
+            "properties": {
+                "masked": {
+                    "type": "string"
+                },
+                "value": {
                     "type": "string"
                 }
             }
